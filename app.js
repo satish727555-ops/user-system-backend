@@ -14,7 +14,7 @@ mongoose.connect(process.env.MONGO_URI)
 console.log("MongoDB Connected");
 })
 .catch(err => console.log(err));
- app.use("/api/users", require("./routes/userRoutes"));
+ app.use('/api/users', require("./routes/userRoutes"));
 app.get('/',(req, res) => {
    res.render('register');
 });
