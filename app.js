@@ -13,6 +13,7 @@ console.log("MongoDB Connected");
 })
 .catch(err => console.log(err));
  app.use("/api/users", require("./routes/userRoutes"));
+ app.get('/',(req, res) => res.send("<h1>Server is running sucessfully!</h1>"));
  const PORT = process.env.PORT || 5000;
  app.listen(PORT , ()=>{
     console.log('server running on port ${PORT}');
