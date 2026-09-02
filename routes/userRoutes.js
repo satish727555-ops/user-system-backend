@@ -5,7 +5,7 @@ const User = require("../models/User");
 const{protect,adminOnly} = require("../middleware/authMiddleware");
 
 
-const router =express.Router();
+const router = express.Router();
 router.get("/register",(req,res) =>{
     res.render("register");
 })
