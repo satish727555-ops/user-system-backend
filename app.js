@@ -21,10 +21,7 @@ app.set("views", path.join(__dirname, "views"));
 // MongoDB Connect - Buffering Error Fix
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI, {
-            bufferCommands: false,          // Query buffer band
-            serverSelectionTimeoutMS: 5000, // 5 sec timeout
-        });
+
         console.log("✅ MongoDB Connected Successfully");
     } catch (error) {
         console.error("❌ MongoDB Connection Failed:", error.message);
