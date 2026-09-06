@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,12 +11,11 @@
 
 <body class="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center px-4">
 
-
     <div class="w-full max-w-md">
 
         <div class="bg-white rounded-2xl shadow-2xl p-8 sm:p-10">
 
-           
+            <!-- Header -->
             <div class="text-center mb-8">
                 <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100">
                     <svg class="h-7 w-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -26,19 +24,19 @@
                     </svg>
                 </div>
 
-                <h1 class="text-3xl font-bold text-gray-900">
+                <h1 id="title" class="text-3xl font-bold text-gray-900">
                     Create Account
                 </h1>
 
-                <p class="mt-2 text-sm text-gray-500">
+                <p id="subtitle" class="mt-2 text-sm text-gray-500">
                     Create your account to get started
                 </p>
             </div>
 
-        
-            <form action="/api/users/register" method="POST" class="space-y-5">
+            <!-- Register Form -->
+            <form id="registerForm" class="space-y-5">
 
-        
+                <!-- Name -->
                 <div>
                     <label for="username" class="block mb-2 text-sm font-medium text-gray-700">
                         Full Name
@@ -54,7 +52,7 @@
                     >
                 </div>
 
-               
+                <!-- Email -->
                 <div>
                     <label for="email" class="block mb-2 text-sm font-medium text-gray-700">
                         Email Address
@@ -70,7 +68,7 @@
                     >
                 </div>
 
-               
+                <!-- Password -->
                 <div>
                     <label for="password" class="block mb-2 text-sm font-medium text-gray-700">
                         Password
@@ -82,7 +80,7 @@
                             name="password"
                             id="password"
                             placeholder="Enter your password"
-                            minlength="6"
+                            minlength="8"
                             required
                             class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 pr-12 text-sm text-gray-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
                         >
@@ -97,13 +95,20 @@
                     </div>
 
                     <p class="mt-1 text-xs text-gray-500">
-                        Password must be at least 6 characters.
+                        Password must be at least 8 characters.
                     </p>
                 </div>
+
+                <!-- Message -->
+                <div
+                    id="message"
+                    class="hidden rounded-lg px-4 py-3 text-sm"
+                ></div>
 
                 <!-- Submit -->
                 <button
                     type="submit"
+                    id="registerButton"
                     class="w-full rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-700 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-indigo-300"
                 >
                     Create Account
@@ -111,7 +116,45 @@
 
             </form>
 
-      
+            <!-- OTP Form -->
+            <form id="otpForm" class="hidden space-y-5">
+
+                <div>
+                    <label for="otp" class="block mb-2 text-sm font-medium text-gray-700">
+                        Enter OTP
+                    </label>
+
+                    <input
+                        type="text"
+                        id="otp"
+                        maxlength="6"
+                        inputmode="numeric"
+                        placeholder="Enter 6-digit OTP"
+                        required
+                        class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-center text-xl tracking-[8px] text-gray-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                    >
+
+                    <p class="mt-2 text-xs text-gray-500 text-center">
+                        OTP has been sent to your email. It will expire in 10 minutes.
+                    </p>
+                </div>
+
+                <div
+                    id="otpMessage"
+                    class="hidden rounded-lg px-4 py-3 text-sm"
+                ></div>
+
+                <button
+                    type="submit"
+                    id="verifyButton"
+                    class="w-full rounded-lg bg-green-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-green-700"
+                >
+                    Verify Email
+                </button>
+
+            </form>
+
+            <!-- Login -->
             <p class="mt-7 text-center text-sm text-gray-500">
                 Already have an account?
                 <a href="/api/users/login" class="font-semibold text-indigo-600 hover:text-indigo-700">
@@ -128,6 +171,10 @@
     </div>
 
     <script>
+
+        let registeredEmail = "";
+
+        // Password show/hide
         function togglePassword() {
             const password = document.getElementById("password");
 
@@ -137,6 +184,135 @@
                 password.type = "password";
             }
         }
+
+
+        // Register
+        document.getElementById("registerForm").addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const name = document.getElementById("username").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            const message = document.getElementById("message");
+            const button = document.getElementById("registerButton");
+
+            button.disabled = true;
+            button.innerText = "Sending OTP...";
+
+            try {
+
+                const response = await fetch("/api/users/register", {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || "Registration failed");
+                }
+
+                // Save email for OTP verification
+                registeredEmail = email;
+
+                // Hide register form
+                document.getElementById("registerForm").classList.add("hidden");
+
+                // Show OTP form
+                document.getElementById("otpForm").classList.remove("hidden");
+
+                // Change heading
+                document.getElementById("title").innerText = "Verify Your Email";
+
+                document.getElementById("subtitle").innerText =
+                    "Enter the OTP sent to your email";
+
+            } catch (error) {
+
+                message.innerText = error.message;
+
+                message.classList.remove("hidden");
+                message.classList.add("bg-red-100", "text-red-700");
+
+            } finally {
+
+                button.disabled = false;
+                button.innerText = "Create Account";
+            }
+
+        });
+
+
+        // Verify OTP
+        document.getElementById("otpForm").addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const otp = document.getElementById("otp").value;
+
+            const message = document.getElementById("otpMessage");
+            const button = document.getElementById("verifyButton");
+
+            button.disabled = true;
+            button.innerText = "Verifying...";
+
+            try {
+
+                const response = await fetch("/api/users/verify-otp", {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        email: registeredEmail,
+                        otp: otp
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || "OTP verification failed");
+                }
+
+                message.innerText = "Email verified successfully! You can now login.";
+
+                message.classList.remove("hidden");
+                message.classList.add("bg-green-100", "text-green-700");
+
+                button.innerText = "Verified ✓";
+
+                // Login page par bhejo
+                setTimeout(() => {
+                    window.location.href = "/api/users/login";
+                }, 2000);
+
+            } catch (error) {
+
+                message.innerText = error.message;
+
+                message.classList.remove("hidden");
+                message.classList.add("bg-red-100", "text-red-700");
+
+                button.disabled = false;
+                button.innerText = "Verify Email";
+            }
+
+        });
+
     </script>
 
 </body>
