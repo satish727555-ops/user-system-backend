@@ -20,7 +20,7 @@ app.use("/api/users", require("./routes/userRoutes"));
 
 
 app.get("/", (req, res) => {
-    res.send("User system backend is running");
+    res.render("register");
 });
 
 

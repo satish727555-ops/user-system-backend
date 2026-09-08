@@ -15,7 +15,7 @@
 
         <div class="bg-white rounded-2xl shadow-2xl p-8 sm:p-10">
 
-            <!-- Header -->
+          
             <div class="text-center mb-8">
                 <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100">
                     <svg class="h-7 w-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,10 +33,10 @@
                 </p>
             </div>
 
-            <!-- Register Form -->
+            
             <form id="registerForm" class="space-y-5">
 
-                <!-- Name -->
+             
                 <div>
                     <label for="username" class="block mb-2 text-sm font-medium text-gray-700">
                         Full Name
@@ -52,7 +52,7 @@
                     >
                 </div>
 
-                <!-- Email -->
+               
                 <div>
                     <label for="email" class="block mb-2 text-sm font-medium text-gray-700">
                         Email Address
@@ -68,7 +68,7 @@
                     >
                 </div>
 
-                <!-- Password -->
+               
                 <div>
                     <label for="password" class="block mb-2 text-sm font-medium text-gray-700">
                         Password
@@ -99,13 +99,13 @@
                     </p>
                 </div>
 
-                <!-- Message -->
+          
                 <div
                     id="message"
                     class="hidden rounded-lg px-4 py-3 text-sm"
                 ></div>
 
-                <!-- Submit -->
+             
                 <button
                     type="submit"
                     id="registerButton"
@@ -116,7 +116,7 @@
 
             </form>
 
-            <!-- OTP Form -->
+          
             <form id="otpForm" class="hidden space-y-5">
 
                 <div>
@@ -154,7 +154,7 @@
 
             </form>
 
-            <!-- Login -->
+         
             <p class="mt-7 text-center text-sm text-gray-500">
                 Already have an account?
                 <a href="/api/users/login" class="font-semibold text-indigo-600 hover:text-indigo-700">
@@ -223,16 +223,16 @@
                     throw new Error(data.message || "Registration failed");
                 }
 
-                // Save email for OTP verification
+                
                 registeredEmail = email;
 
-                // Hide register form
+            
                 document.getElementById("registerForm").classList.add("hidden");
 
-                // Show OTP form
+             
                 document.getElementById("otpForm").classList.remove("hidden");
 
-                // Change heading
+           
                 document.getElementById("title").innerText = "Verify Your Email";
 
                 document.getElementById("subtitle").innerText =
@@ -254,7 +254,7 @@
         });
 
 
-        // Verify OTP
+        
         document.getElementById("otpForm").addEventListener("submit", async function(event) {
 
             event.preventDefault();
@@ -295,7 +295,7 @@
 
                 button.innerText = "Verified ✓";
 
-                // Login page par bhejo
+                
                 setTimeout(() => {
                     window.location.href = "/api/users/login";
                 }, 2000);
