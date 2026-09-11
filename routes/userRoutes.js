@@ -1,166 +1,151 @@
+
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
 const User = require("../models/User");
 const dbConnect = require("../models/dbConnect");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 const sendOTP = require("../middleware/utils/sendEmail");
 
-
 const router = express.Router();
 
+// Helpers
+const normalizeEmail = email => email.toLowerCase().trim();
+
+const generateOTP = () =>
+    Math.floor(100000 + Math.random() * 900000).toString();
+
+const getOTPExpiry = () =>
+    new Date(Date.now() + 5 * 60 * 1000);
+
+// Register Page
 router.get("/register", (req, res) => {
     res.render("register");
 });
 
-
+// Register
 router.post("/register", async (req, res) => {
     try {
         await dbConnect();
 
         const { name, email, password } = req.body;
 
-        // Required fields
-        if (!name || !email || !password) {
+        if (!name || !email || !password)
             return res.status(400).json({
-                message: "Name, email and password are required"
+                success: false,
+                message: "Name, email and password are required."
             });
-        }
 
-     
-        if (name.trim().length < 3) {
+        if (name.trim().length < 3)
             return res.status(400).json({
-                message: "Name must be at least 3 characters"
+                success: false,
+                message: "Name must contain at least 3 characters."
             });
-        }
 
-  
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if (!emailRegex.test(email)) {
+        if (password.length < 8)
             return res.status(400).json({
-                message: "Invalid email format"
+                success: false,
+                message: "Password must contain at least 8 characters."
             });
-        }
 
-       
-        if (password.length < 8) {
-            return res.status(400).json({
-                message: "Password must be at least 8 characters"
-            });
-        }
+        const normalizedEmail = normalizeEmail(email);
 
-        const normalizedEmail = email.toLowerCase().trim();
-
-
-        const userExists = await User.findOne({
+        const existingUser = await User.findOne({
             email: normalizedEmail
         });
 
-        if (userExists) {
-            return res.status(400).json({
-                message: "User already exists"
+        if (existingUser)
+            return res.status(409).json({
+                success: false,
+                message: "User already exists."
+            });
+
+        const otp = generateOTP();
+
+        const user = await User.create({
+            name: name.trim(),
+            email: normalizedEmail,
+            password: await bcrypt.hash(password, 12),
+            otp,
+            otpExpires: getOTPExpiry(),
+            isVerified: false
+        });
+
+        try {
+            await sendOTP(normalizedEmail, otp);
+        } catch (error) {
+            await User.deleteOne({ _id: user._id });
+
+            console.error("OTP Email Error:", error.message);
+
+            return res.status(500).json({
+                success: false,
+                message: "Unable to send OTP. Please try again."
             });
         }
 
-  
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-      
-        const otp = Math.floor(
-            100000 + Math.random() * 900000
-        ).toString();
-
-        const otpExpires = new Date(
-            Date.now() + 10 * 60 * 1000
-        );
-
-  const user = await User.create({
-    name: name.trim(),
-    email: normalizedEmail,
-    password: hashedPassword,
-    otp,
-    otpExpires,
-    isVerified: false
-});
-
-try {
-    await sendOTP(normalizedEmail, otp);
-} catch (emailError) {
-    console.error("OTP Email Error:", emailError);
-
-    await User.deleteOne({
-        _id: user._id
-    });
-
-    return res.status(500).json({
-        message: "Unable to send OTP. Account was not created."
-    });
-}
-
-return res.status(201).json({
-    message: "OTP sent to your email. Please verify your email."
-});
+        res.status(201).json({
+            success: true,
+            message: "OTP sent successfully. Please verify your email."
+        });
 
     } catch (error) {
-        console.error("Register Error:", error);
+        console.error("Register Error:", error.message);
 
         res.status(500).json({
-            message: "Server error"
+            success: false,
+            message: "Server error. Please try again later."
         });
     }
 });
 
-
-
+// Verify OTP
 router.post("/verify-otp", async (req, res) => {
     try {
         await dbConnect();
 
         const { email, otp } = req.body;
 
-        if (!email || !otp) {
+        if (!email || !otp)
             return res.status(400).json({
-                message: "Email and OTP are required"
+                success: false,
+                message: "Email and OTP are required."
             });
-        }
-
-        const normalizedEmail = email.toLowerCase().trim();
 
         const user = await User.findOne({
-            email: normalizedEmail
+            email: normalizeEmail(email)
         });
 
-        if (!user) {
+        if (!user)
             return res.status(404).json({
-                message: "User not found"
+                success: false,
+                message: "User not found."
             });
-        }
 
-        if (user.isVerified) {
-            return res.status(400).json({
-                message: "Email already verified"
+        if (user.isVerified)
+            return res.status(409).json({
+                success: false,
+                message: "Email is already verified."
             });
-        }
 
-        if (!user.otp || !user.otpExpires) {
+        if (!user.otp || !user.otpExpires)
             return res.status(400).json({
-                message: "OTP not found"
+                success: false,
+                message: "OTP is not available."
             });
-        }
 
-        if (user.otpExpires < new Date()) {
+        if (user.otpExpires < new Date())
             return res.status(400).json({
-                message: "OTP has expired"
+                success: false,
+                message: "OTP has expired."
             });
-        }
 
-    
-        if (user.otp !== otp.toString()) {
+        if (user.otp !== otp.toString())
             return res.status(400).json({
-                message: "Invalid OTP"
+                success: false,
+                message: "Invalid OTP."
             });
-        }
 
         user.isVerified = true;
         user.otp = null;
@@ -169,75 +154,74 @@ router.post("/verify-otp", async (req, res) => {
         await user.save();
 
         res.json({
-            message: "Email verified successfully. You can now login."
+            success: true,
+            message: "Email verified successfully."
         });
 
     } catch (error) {
-        console.error("OTP Verification Error:", error);
+        console.error("OTP Error:", error.message);
 
         res.status(500).json({
-            message: "Server error"
+            success: false,
+            message: "Unable to verify OTP."
         });
     }
 });
 
+// Login Page
+router.get("/login", (req, res) => {
+    res.render("login");
+});
 
-
+// Login
 router.post("/login", async (req, res) => {
     try {
         await dbConnect();
 
         const { email, password } = req.body;
 
-        if (!email || !password) {
+        if (!email || !password)
             return res.status(400).json({
-                message: "Email and password are required"
+                success: false,
+                message: "Email and password are required."
             });
-        }
-
-        const normalizedEmail = email.toLowerCase().trim();
 
         const user = await User.findOne({
-            email: normalizedEmail
+            email: normalizeEmail(email)
         });
 
-        if (!user) {
-            return res.status(400).json({
-                message: "Invalid email or password"
+        if (!user)
+            return res.status(401).json({
+                success: false,
+                message: "Invalid email or password."
             });
-        }
 
-        if (!user.isVerified) {
+        if (!user.isVerified)
             return res.status(403).json({
-                message: "Please verify your email before login"
+                success: false,
+                message: "Please verify your email first."
             });
-        }
 
-   
-        const isMatch = await bcrypt.compare(
+        const validPassword = await bcrypt.compare(
             password,
             user.password
         );
 
-        if (!isMatch) {
-            return res.status(400).json({
-                message: "Invalid email or password"
+        if (!validPassword)
+            return res.status(401).json({
+                success: false,
+                message: "Invalid email or password."
             });
-        }
 
-   
         const token = jwt.sign(
-            {
-                id: user._id,
-                role: user.role
-            },
+            { id: user._id, role: user.role },
             process.env.JWT_SECRET,
-            {
-                expiresIn: "1d"
-            }
+            { expiresIn: "1d" }
         );
 
         res.json({
+            success: true,
+            message: "Login successful.",
             token,
             user: {
                 id: user._id,
@@ -248,15 +232,16 @@ router.post("/login", async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Login Error:", error);
+        console.error("Login Error:", error.message);
 
         res.status(500).json({
-            message: "Server error"
+            success: false,
+            message: "Unable to login."
         });
     }
 });
 
-
+// Protected Profile
 router.get("/profile", protect, async (req, res) => {
     try {
         await dbConnect();
@@ -264,23 +249,33 @@ router.get("/profile", protect, async (req, res) => {
         const user = await User.findById(req.user.id)
             .select("-password -otp -otpExpires");
 
-        res.json(user);
+        if (!user)
+            return res.status(404).json({
+                success: false,
+                message: "User not found."
+            });
+
+        res.json({
+            success: true,
+            user
+        });
 
     } catch (error) {
-        console.error("Profile Error:", error);
+        console.error("Profile Error:", error.message);
 
         res.status(500).json({
-            message: "Server error"
+            success: false,
+            message: "Unable to load profile."
         });
     }
 });
 
-
+// Admin
 router.get("/admin", protect, adminOnly, (req, res) => {
     res.json({
-        message: "Welcome Admin"
+        success: true,
+        message: "Welcome Admin."
     });
 });
-
 
 module.exports = router;
