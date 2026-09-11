@@ -75,22 +75,32 @@ router.post("/register", async (req, res) => {
             Date.now() + 10 * 60 * 1000
         );
 
-  
-        await User.create({
-            name: name.trim(),
-            email: normalizedEmail,
-            password: hashedPassword,
-            otp,
-            otpExpires,
-            isVerified: false
-        });
+  const user = await User.create({
+    name: name.trim(),
+    email: normalizedEmail,
+    password: hashedPassword,
+    otp,
+    otpExpires,
+    isVerified: false
+});
 
-        // Send OTP
-        await sendOTP(normalizedEmail, otp);
+try {
+    await sendOTP(normalizedEmail, otp);
+} catch (emailError) {
+    console.error("OTP Email Error:", emailError);
 
-        res.status(201).json({
-            message: "OTP sent to your email. Please verify your email."
-        });
+    await User.deleteOne({
+        _id: user._id
+    });
+
+    return res.status(500).json({
+        message: "Unable to send OTP. Account was not created."
+    });
+}
+
+return res.status(201).json({
+    message: "OTP sent to your email. Please verify your email."
+});
 
     } catch (error) {
         console.error("Register Error:", error);
