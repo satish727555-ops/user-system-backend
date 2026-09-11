@@ -6,6 +6,7 @@ const dbConnect = require("../models/dbConnect");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 const sendOTP = require("../middleware/utils/sendEmail");
 
+
 const router = express.Router();
 
 router.get("/register", (req, res) => {
