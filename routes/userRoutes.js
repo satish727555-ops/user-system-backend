@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const dbConnect = require("../models/dbConnect");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
-const sendOTP = require("../utils/sendEmail");
+const sendOTP = require("../middleware/utils/sendEmail");
 
 const router = express.Router();
 
