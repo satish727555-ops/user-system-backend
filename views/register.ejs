@@ -1,939 +1,1489 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Create Account | User System</title>
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,Helvetica,sans-serif;
-}
-
-body{
-    min-height:100dvh;
-    width:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    overflow-x:hidden;
-    position:relative;
-
-    background:
-        radial-gradient(circle at 10% 15%,rgba(0,210,255,.20),transparent 28%),
-        radial-gradient(circle at 90% 85%,rgba(124,58,237,.25),transparent 30%),
-        linear-gradient(135deg,#050816,#0b1026,#111936);
-}
-
-/* TECH GRID */
-
-body::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    opacity:.35;
-
-    background-image:
-        linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
-
-    background-size:45px 45px;
-}
-
-/* GLOW */
-
-body::after{
-    content:"";
-    position:absolute;
-    width:500px;
-    height:500px;
-    border-radius:50%;
-    right:-220px;
-    top:-220px;
-
-    background:radial-gradient(
-        circle,
-        rgba(0,217,255,.25),
-        transparent 68%
-    );
-
-    filter:blur(8px);
-}
-
-/* CONTAINER */
-
-.container{
-    width:100%;
-    max-width:440px;
-    padding:20px;
-    position:relative;
-    z-index:2;
-}
-
-/* CARD */
-
-.card{
-    width:100%;
-    background:rgba(255,255,255,.97);
-    border-radius:24px;
-    padding:36px;
-
-    box-shadow:
-        0 30px 80px rgba(0,0,0,.45),
-        0 0 40px rgba(0,200,255,.08);
-
-    animation:show .45s ease;
-}
-
-@keyframes show{
-    from{
-        opacity:0;
-        transform:translateY(20px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-/* LOGO */
-
-.logo{
-    width:60px;
-    height:60px;
-    margin:0 auto 15px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    border-radius:17px;
-
-    color:white;
-    font-size:21px;
-    font-weight:bold;
-
-    background:linear-gradient(135deg,#06b6d4,#4f46e5);
-
-    box-shadow:0 12px 30px rgba(37,99,235,.35);
-}
-
-/* HEADING */
-
-.title{
-    text-align:center;
-    color:#111827;
-    font-size:28px;
-    margin-bottom:7px;
-}
-
-.subtitle{
-    text-align:center;
-    color:#6b7280;
-    font-size:13px;
-    margin-bottom:26px;
-}
-
-/* MESSAGE */
-
-.message{
-    display:none;
-    padding:11px 13px;
-    margin-bottom:16px;
-    border-radius:9px;
-    font-size:13px;
-}
-
-.message.success{
-    display:block;
-    color:#047857;
-    background:#ecfdf5;
-    border:1px solid #a7f3d0;
-}
-
-.message.error{
-    display:block;
-    color:#b91c1c;
-    background:#fef2f2;
-    border:1px solid #fecaca;
-}
-
-/* FORM */
-
-.group{
-    margin-bottom:16px;
-}
-
-label{
-    display:block;
-    margin-bottom:7px;
-    color:#374151;
-    font-size:13px;
-    font-weight:600;
-}
-
-.input{
-    position:relative;
-}
-
-.input input{
-    width:100%;
-    height:51px;
-    padding:0 43px;
-
-    border:1px solid #d7dce5;
-    border-radius:11px;
-
-    outline:none;
-    background:#fff;
-
-    color:#111827;
-    font-size:14px;
-
-    transition:.2s;
-}
-
-.input input:focus{
-    border-color:#2563eb;
-    box-shadow:0 0 0 4px rgba(37,99,235,.09);
-}
-
-.icon{
-    position:absolute;
-    left:14px;
-    top:50%;
-    transform:translateY(-50%);
-    font-size:16px;
-}
-
-.password input{
-    padding-right:52px;
-}
-
-.eye{
-    position:absolute;
-    right:6px;
-    top:50%;
-    transform:translateY(-50%);
-
-    width:38px;
-    height:38px;
-
-    border:0;
-    background:transparent;
-    border-radius:8px;
-
-    cursor:pointer;
-    font-size:17px;
-}
-
-/* BUTTON */
-
-.btn{
-    width:100%;
-    height:51px;
-
-    border:0;
-    border-radius:11px;
-
-    color:white;
-    font-size:14px;
-    font-weight:bold;
-
-    cursor:pointer;
-
-    background:linear-gradient(135deg,#2563eb,#4f46e5);
-
-    transition:.2s;
-}
-
-.btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 10px 25px rgba(37,99,235,.30);
-}
-
-.btn:disabled{
-    opacity:.65;
-    cursor:not-allowed;
-    transform:none;
-}
-
-/* OTP */
-
-#otpSection{
-    display:none;
-}
-
-.otp-title{
-    text-align:center;
-    color:#111827;
-    font-size:21px;
-    margin-bottom:7px;
-}
-
-.otp-text{
-    text-align:center;
-    color:#6b7280;
-    font-size:13px;
-    margin-bottom:20px;
-}
-
-.otp{
-    width:100%;
-    height:57px;
-
-    border:1px solid #d7dce5;
-    border-radius:11px;
-
-    outline:none;
-
-    text-align:center;
-    letter-spacing:10px;
-
-    font-size:22px;
-    font-weight:bold;
-
-    color:#111827;
-}
-
-.otp:focus{
-    border-color:#2563eb;
-    box-shadow:0 0 0 4px rgba(37,99,235,.09);
-}
-
-.resend{
-    text-align:center;
-    margin-top:15px;
-    color:#6b7280;
-    font-size:13px;
-}
-
-.resend button{
-    border:0;
-    background:none;
-    color:#2563eb;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-/* LOGIN */
-
-.login{
-    text-align:center;
-    margin-top:21px;
-    color:#6b7280;
-    font-size:13px;
-}
-
-.login a{
-    color:#2563eb;
-    text-decoration:none;
-    font-weight:bold;
-}
-
-.security{
-    text-align:center;
-    color:#9ca3af;
-    font-size:11px;
-    margin-top:17px;
-}
-
-/* MOBILE FULL SCREEN */
-
-@media(max-width:600px){
-
-    body{
-        min-height:100dvh;
-        align-items:stretch;
-    }
-
-    .container{
-        max-width:none;
-        width:100%;
-        min-height:100dvh;
-        padding:0;
-    }
-
-    .card{
-        min-height:100dvh;
-        width:100%;
-
-        border-radius:0;
-
-        padding:
-            max(28px,env(safe-area-inset-top))
-            24px
-            max(28px,env(safe-area-inset-bottom));
-
-        display:flex;
-        flex-direction:column;
-        justify-content:center;
-    }
-
-    .title{
-        font-size:25px;
-    }
-
-    .logo{
-        width:58px;
-        height:58px;
-    }
-}
-
-@media(max-width:360px){
-
-    .card{
-        padding-left:18px;
-        padding-right:18px;
-    }
-
-    .title{
-        font-size:23px;
-    }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account | User System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100dvh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
+
+            background:
+                radial-gradient(
+                    circle at 10% 15%,
+                    rgba(0, 210, 255, 0.20),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 90% 85%,
+                    rgba(124, 58, 237, 0.25),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    #050816,
+                    #0b1026,
+                    #111936
+                );
+        }
+
+        /* Grid Background */
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            opacity: 0.35;
+
+            background-image:
+                linear-gradient(
+                    rgba(255,255,255,0.035) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,0.035) 1px,
+                    transparent 1px
+                );
+
+            background-size: 45px 45px;
+
+            pointer-events: none;
+        }
+
+        /* Glow */
+        body::after {
+            content: "";
+            position: absolute;
+
+            width: 500px;
+            height: 500px;
+
+            border-radius: 50%;
+
+            right: -220px;
+            top: -220px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(0, 217, 255, 0.25),
+                    transparent 68%
+                );
+
+            filter: blur(8px);
+
+            pointer-events: none;
+        }
+
+        /* Main Container */
+        .container {
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Card */
+        .card {
+            width: 100%;
+
+            background: rgba(255,255,255,0.97);
+
+            border-radius: 26px;
+
+            padding: 36px 34px;
+
+            box-shadow:
+                0 30px 80px rgba(0,0,0,0.45),
+                0 0 0 1px rgba(255,255,255,0.25);
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Top line */
+        .card::before {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            right: 0;
+            top: 0;
+
+            height: 4px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #00c6ff,
+                    #0072ff,
+                    #7c3aed
+                );
+        }
+
+        /* Logo */
+        .logo {
+            width: 62px;
+            height: 62px;
+
+            border-radius: 18px;
+
+            margin: 0 auto 16px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            color: white;
+
+            font-size: 22px;
+            font-weight: 800;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #00c6ff,
+                    #0072ff,
+                    #7c3aed
+                );
+
+            box-shadow:
+                0 12px 30px rgba(0,114,255,0.30);
+        }
+
+        /* Heading */
+        .title {
+            text-align: center;
+
+            font-size: 28px;
+            font-weight: 800;
+
+            color: #111827;
+
+            margin-bottom: 7px;
+        }
+
+        .subtitle {
+            text-align: center;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+
+            color: #6b7280;
+
+            margin-bottom: 26px;
+        }
+
+        /* Form Group */
+        .group {
+            margin-bottom: 17px;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            color: #374151;
+        }
+
+        /* Input */
+        .input {
+            position: relative;
+        }
+
+        .input input {
+            width: 100%;
+
+            height: 51px;
+
+            border: 1px solid #d9dee8;
+
+            border-radius: 12px;
+
+            outline: none;
+
+            padding: 0 15px;
+
+            font-size: 14px;
+
+            color: #111827;
+
+            background: #f9fafb;
+
+            transition: 0.25s;
+        }
+
+        .input input:focus {
+            background: #ffffff;
+
+            border-color: #0072ff;
+
+            box-shadow:
+                0 0 0 4px rgba(0,114,255,0.10);
+        }
+
+        .input input::placeholder {
+            color: #9ca3af;
+        }
+
+        /* Password Eye */
+        .password-input {
+            padding-right: 48px !important;
+        }
+
+        .eye {
+            position: absolute;
+
+            right: 14px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            border: none;
+
+            background: transparent;
+
+            cursor: pointer;
+
+            font-size: 18px;
+
+            color: #6b7280;
+
+            padding: 4px;
+        }
+
+        .eye:hover {
+            color: #0072ff;
+        }
+
+        /* Button */
+        .btn {
+            width: 100%;
+
+            height: 51px;
+
+            margin-top: 7px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            cursor: pointer;
+
+            color: white;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #00a8ff,
+                    #0072ff,
+                    #6d28d9
+                );
+
+            box-shadow:
+                0 12px 25px rgba(0,114,255,0.25);
+
+            transition: 0.25s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 16px 30px rgba(0,114,255,0.35);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            cursor: not-allowed;
+
+            opacity: 0.7;
+
+            transform: none;
+        }
+
+        /* Message */
+        .message {
+            display: none;
+
+            margin-top: 15px;
+
+            padding: 11px 12px;
+
+            border-radius: 10px;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+
+            text-align: center;
+        }
+
+        .message.success {
+            display: block;
+
+            color: #166534;
+
+            background: #dcfce7;
+
+            border: 1px solid #bbf7d0;
+        }
+
+        .message.error {
+            display: block;
+
+            color: #991b1b;
+
+            background: #fee2e2;
+
+            border: 1px solid #fecaca;
+        }
+
+        /* Login */
+        .login {
+            text-align: center;
+
+            margin-top: 21px;
+
+            font-size: 13px;
+
+            color: #6b7280;
+        }
+
+        .login a {
+            color: #0072ff;
+
+            text-decoration: none;
+
+            font-weight: 700;
+        }
+
+        .login a:hover {
+            text-decoration: underline;
+        }
+
+        /* Security */
+        .security {
+            text-align: center;
+
+            margin-top: 17px;
+
+            color: #9ca3af;
+
+            font-size: 10px;
+        }
+
+        /* OTP Section */
+        #otpSection {
+            display: none;
+        }
+
+        .otp-icon {
+            width: 58px;
+            height: 58px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 16px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-size: 25px;
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0072ff,
+                    #7c3aed
+                );
+
+            box-shadow:
+                0 12px 25px rgba(0,114,255,0.25);
+        }
+
+        .otp-title {
+            text-align: center;
+
+            font-size: 22px;
+
+            font-weight: 800;
+
+            color: #111827;
+
+            margin-bottom: 7px;
+        }
+
+        .otp-text {
+            text-align: center;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+
+            color: #6b7280;
+
+            margin-bottom: 20px;
+        }
+
+        .otp-email {
+            font-weight: 700;
+
+            color: #0072ff;
+
+            word-break: break-word;
+        }
+
+        .otp-input {
+            width: 100%;
+
+            height: 58px;
+
+            border: 1px solid #d9dee8;
+
+            border-radius: 12px;
+
+            outline: none;
+
+            text-align: center;
+
+            letter-spacing: 8px;
+
+            font-size: 23px;
+
+            font-weight: 800;
+
+            color: #111827;
+
+            background: #f9fafb;
+
+            transition: 0.25s;
+        }
+
+        .otp-input:focus {
+            background: white;
+
+            border-color: #0072ff;
+
+            box-shadow:
+                0 0 0 4px rgba(0,114,255,0.10);
+        }
+
+        .resend {
+            display: block;
+
+            margin: 15px auto 0;
+
+            border: none;
+
+            background: transparent;
+
+            color: #0072ff;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .resend:hover {
+            text-decoration: underline;
+        }
+
+        .back {
+            display: block;
+
+            margin: 13px auto 0;
+
+            border: none;
+
+            background: transparent;
+
+            color: #6b7280;
+
+            font-size: 11px;
+
+            cursor: pointer;
+        }
+
+        .back:hover {
+            color: #111827;
+        }
+
+        /* Loading */
+        .spinner {
+            display: inline-block;
+
+            width: 14px;
+            height: 14px;
+
+            border: 2px solid rgba(255,255,255,0.4);
+
+            border-top-color: white;
+
+            border-radius: 50%;
+
+            animation: spin 0.7s linear infinite;
+
+            vertical-align: middle;
+
+            margin-right: 7px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            body {
+                min-height: 100dvh;
+
+                padding: 18px 12px;
+
+                align-items: center;
+
+                overflow-y: auto;
+            }
+
+            .container {
+                width: 100%;
+
+                max-width: 370px;
+
+                padding: 0;
+            }
+
+            .card {
+                width: 100%;
+
+                min-height: auto;
+
+                padding: 26px 20px;
+
+                border-radius: 20px;
+
+                box-shadow:
+                    0 20px 50px rgba(0,0,0,0.40);
+            }
+
+            .logo {
+                width: 54px;
+                height: 54px;
+
+                border-radius: 16px;
+
+                margin-bottom: 12px;
+
+                font-size: 19px;
+            }
+
+            .title {
+                font-size: 24px;
+
+                margin-bottom: 6px;
+            }
+
+            .subtitle {
+                font-size: 12px;
+
+                margin-bottom: 21px;
+            }
+
+            .group {
+                margin-bottom: 13px;
+            }
+
+            label {
+                font-size: 12px;
+
+                margin-bottom: 6px;
+            }
+
+            .input input {
+                height: 47px;
+
+                font-size: 13px;
+
+                border-radius: 11px;
+            }
+
+            .btn {
+                height: 48px;
+
+                font-size: 13px;
+
+                border-radius: 11px;
+            }
+
+            .login {
+                margin-top: 17px;
+
+                font-size: 12px;
+            }
+
+            .security {
+                margin-top: 14px;
+
+                font-size: 10px;
+            }
+
+            .otp-icon {
+                width: 52px;
+                height: 52px;
+
+                font-size: 22px;
+
+                margin-bottom: 12px;
+            }
+
+            .otp-title {
+                font-size: 19px;
+            }
+
+            .otp-text {
+                font-size: 12px;
+
+                margin-bottom: 17px;
+            }
+
+            .otp-input {
+                height: 52px;
+
+                font-size: 20px;
+
+                letter-spacing: 6px;
+            }
+        }
+
+        /* Very Small Phones */
+
+        @media (max-width: 360px) {
+
+            body {
+                padding: 14px 9px;
+            }
+
+            .container {
+                max-width: 340px;
+            }
+
+            .card {
+                padding: 22px 17px;
+
+                border-radius: 18px;
+            }
+
+            .title {
+                font-size: 22px;
+            }
+
+            .subtitle {
+                font-size: 11px;
+            }
+
+            .input input {
+                height: 45px;
+            }
+
+            .btn {
+                height: 46px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-<div class="card">
+        <div class="card">
 
-    <div class="logo">US</div>
+            <!-- =========================
+                 REGISTER SECTION
+            ========================== -->
 
-    <h1 class="title" id="title">
-        Create Account
-    </h1>
+            <div id="registerSection">
 
-    <p class="subtitle" id="subtitle">
-        Create your account and get started
-    </p>
+                <div class="logo">
+                    US
+                </div>
 
-    <div id="message" class="message"></div>
+                <h1 class="title">
+                    Create Account
+                </h1>
+
+                <p class="subtitle">
+                    Create your account and get started securely.
+                </p>
+
+                <form id="registerForm">
+
+                    <!-- Username -->
+                    <div class="group">
+
+                        <label for="username">
+                            Username
+                        </label>
+
+                        <div class="input">
+
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                placeholder="Enter your username"
+                                minlength="3"
+                                required
+                                autocomplete="username"
+                            >
+
+                        </div>
+
+                    </div>
 
 
-    <!-- REGISTER -->
+                    <!-- Email -->
+                    <div class="group">
 
-    <form id="registerForm">
+                        <label for="email">
+                            Email Address
+                        </label>
 
-        <div class="group">
+                        <div class="input">
 
-            <label>Username</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="Enter your email"
+                                required
+                                autocomplete="email"
+                            >
 
-            <div class="input">
+                        </div>
 
-                <span class="icon">👤</span>
+                    </div>
 
-                <input
-                    type="text"
-                    id="username"
-                    placeholder="Enter your username"
-                    minlength="3"
-                    autocomplete="username"
-                    required
-                >
+
+                    <!-- Password -->
+                    <div class="group">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <div class="input">
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="password-input"
+                                placeholder="Create a password"
+                                minlength="6"
+                                required
+                                autocomplete="new-password"
+                            >
+
+                            <button
+                                type="button"
+                                class="eye"
+                                id="togglePassword"
+                                aria-label="Show password"
+                            >
+                                👁
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Register Button -->
+                    <button
+                        type="submit"
+                        class="btn"
+                        id="registerButton"
+                    >
+                        Create Account
+                    </button>
+
+                </form>
+
+
+                <!-- Message -->
+                <div
+                    id="message"
+                    class="message"
+                ></div>
+
+
+                <!-- Login -->
+                <div class="login">
+
+                    Already have an account?
+
+                    <a href="/api/users/login">
+                        Login
+                    </a>
+
+                </div>
+
+
+                <!-- Security -->
+                <div class="security">
+                    🔒 Your information is securely protected
+                </div>
 
             </div>
 
-        </div>
+
+            <!-- =========================
+                 OTP SECTION
+            ========================== -->
+
+            <div id="otpSection">
+
+                <div class="otp-icon">
+                    ✉
+                </div>
+
+                <h2 class="otp-title">
+                    Verify Your Email
+                </h2>
+
+                <p class="otp-text">
+
+                    Enter the 6-digit OTP sent to
+
+                    <br>
+
+                    <span
+                        id="otpEmail"
+                        class="otp-email"
+                    ></span>
+
+                </p>
 
 
-        <div class="group">
+                <form id="otpForm">
 
-            <label>Email Address</label>
+                    <input
+                        type="text"
+                        id="otp"
+                        class="otp-input"
+                        placeholder="000000"
+                        maxlength="6"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        required
+                    >
 
-            <div class="input">
+                    <button
+                        type="submit"
+                        class="btn"
+                        id="verifyButton"
+                    >
+                        Verify OTP
+                    </button>
 
-                <span class="icon">✉️</span>
+                </form>
 
-                <input
-                    type="email"
-                    id="email"
-                    placeholder="Enter your email"
-                    autocomplete="email"
-                    required
-                >
-
-            </div>
-
-        </div>
-
-
-        <div class="group">
-
-            <label>Password</label>
-
-            <div class="input password">
-
-                <span class="icon">🔒</span>
-
-                <input
-                    type="password"
-                    id="password"
-                    placeholder="Create a strong password"
-                    minlength="6"
-                    autocomplete="new-password"
-                    required
-                >
 
                 <button
                     type="button"
-                    class="eye"
-                    onclick="togglePassword()"
+                    class="resend"
+                    id="resendButton"
                 >
-                    👁️
+                    Resend OTP
                 </button>
+
+
+                <button
+                    type="button"
+                    class="back"
+                    id="backButton"
+                >
+                    ← Back to registration
+                </button>
+
+
+                <div
+                    id="otpMessage"
+                    class="message"
+                ></div>
 
             </div>
 
         </div>
 
-
-        <button
-            type="submit"
-            class="btn"
-            id="registerBtn"
-        >
-            Create Account
-        </button>
-
-    </form>
-
-
-    <!-- OTP -->
-
-    <div id="otpSection">
-
-        <h2 class="otp-title">
-            Verify Your Email
-        </h2>
-
-        <p class="otp-text">
-            Enter the 6-digit OTP sent to your email
-        </p>
-
-        <input
-            class="otp"
-            id="otp"
-            type="text"
-            inputmode="numeric"
-            maxlength="6"
-            placeholder="••••••"
-            autocomplete="one-time-code"
-        >
-
-        <br><br>
-
-        <button
-            class="btn"
-            id="verifyBtn"
-            onclick="verifyOTP()"
-        >
-            Verify OTP
-        </button>
-
-        <div class="resend">
-            Didn't receive the code?
-            <button onclick="resendOTP()">
-                Resend OTP
-            </button>
-        </div>
-
     </div>
 
 
-    <div class="login">
+    <script>
 
-        Already have an account?
+        /* =========================
+           VARIABLES
+        ========================== */
 
-        <a href="/api/users/login">
-            Login
-        </a>
-
-    </div>
-
-    <div class="security">
-        🔒 Your account information is securely protected
-    </div>
-
-</div>
-
-</div>
+        let userEmail = "";
 
 
-<script>
+        /* =========================
+           PASSWORD TOGGLE
+        ========================== */
 
-let userEmail = "";
+        const password =
+            document.getElementById("password");
 
-
-/* PASSWORD */
-
-function togglePassword(){
-
-    const password =
-        document.getElementById("password");
-
-    password.type =
-        password.type === "password"
-        ? "text"
-        : "password";
-}
+        const togglePassword =
+            document.getElementById("togglePassword");
 
 
-/* MESSAGE */
+        togglePassword.addEventListener(
+            "click",
+            function () {
 
-function showMessage(text,type){
+                if (password.type === "password") {
 
-    const message =
-        document.getElementById("message");
+                    password.type = "text";
 
-    message.textContent = text;
+                    togglePassword.textContent = "🙈";
 
-    message.className =
-        "message " + type;
-}
+                    togglePassword.setAttribute(
+                        "aria-label",
+                        "Hide password"
+                    );
 
+                } else {
 
-/* REGISTER */
+                    password.type = "password";
 
-document
-.getElementById("registerForm")
-.addEventListener("submit",async function(e){
+                    togglePassword.textContent = "👁";
 
-    e.preventDefault();
+                    togglePassword.setAttribute(
+                        "aria-label",
+                        "Show password"
+                    );
+                }
 
-    const username =
-        document.getElementById("username")
-        .value.trim();
-
-    const email =
-        document.getElementById("email")
-        .value.trim();
-
-    const password =
-        document.getElementById("password")
-        .value;
-
-    const btn =
-        document.getElementById("registerBtn");
-
-
-    if(username.length < 3){
-
-        showMessage(
-            "Username must be at least 3 characters.",
-            "error"
+            }
         );
 
-        return;
-    }
+
+        /* =========================
+           MESSAGE FUNCTION
+        ========================== */
+
+        function showMessage(
+            element,
+            text,
+            type
+        ) {
+
+            element.textContent = text;
+
+            element.className =
+                "message " + type;
+        }
 
 
-    if(password.length < 6){
+        /* =========================
+           REGISTER
+        ========================== */
 
-        showMessage(
-            "Password must be at least 6 characters.",
-            "error"
+        const registerForm =
+            document.getElementById("registerForm");
+
+        const registerButton =
+            document.getElementById("registerButton");
+
+        const message =
+            document.getElementById("message");
+
+
+        registerForm.addEventListener(
+            "submit",
+            async function (e) {
+
+                e.preventDefault();
+
+                message.className = "message";
+
+                const username =
+                    document.getElementById("username")
+                    .value
+                    .trim();
+
+                const email =
+                    document.getElementById("email")
+                    .value
+                    .trim();
+
+                const passwordValue =
+                    document.getElementById("password")
+                    .value;
+
+
+                if (username.length < 3) {
+
+                    showMessage(
+                        message,
+                        "Username must be at least 3 characters.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (passwordValue.length < 6) {
+
+                    showMessage(
+                        message,
+                        "Password must be at least 6 characters.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                registerButton.disabled = true;
+
+                registerButton.innerHTML =
+                    '<span class="spinner"></span>Sending OTP...';
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/users/register",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+
+                                    username: username,
+
+                                    email: email,
+
+                                    password: passwordValue
+
+                                })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.message ||
+                            data.error ||
+                            "Registration failed."
+                        );
+                    }
+
+
+                    /*
+                     * Save email for OTP
+                     */
+
+                    userEmail = email;
+
+
+                    /*
+                     * Show OTP section
+                     */
+
+                    document.getElementById(
+                        "registerSection"
+                    ).style.display = "none";
+
+
+                    document.getElementById(
+                        "otpSection"
+                    ).style.display = "block";
+
+
+                    document.getElementById(
+                        "otpEmail"
+                    ).textContent = email;
+
+
+                    showMessage(
+                        document.getElementById("otpMessage"),
+                        data.message ||
+                        "OTP sent successfully. Check your email.",
+                        "success"
+                    );
+
+
+                    /*
+                     * Focus OTP
+                     */
+
+                    document
+                        .getElementById("otp")
+                        .focus();
+
+
+                } catch (error) {
+
+                    showMessage(
+                        message,
+                        error.message ||
+                        "Something went wrong.",
+                        "error"
+                    );
+
+                } finally {
+
+                    registerButton.disabled = false;
+
+                    registerButton.textContent =
+                        "Create Account";
+                }
+
+            }
         );
 
-        return;
-    }
+
+        /* =========================
+           OTP ONLY NUMBERS
+        ========================== */
+
+        const otpInput =
+            document.getElementById("otp");
 
 
-    userEmail = email;
+        otpInput.addEventListener(
+            "input",
+            function () {
 
-    btn.disabled = true;
-    btn.textContent = "Sending OTP...";
+                this.value =
+                    this.value
+                    .replace(/\D/g, "")
+                    .slice(0, 6);
+
+            }
+        );
 
 
-    try{
+        /* =========================
+           VERIFY OTP
+        ========================== */
 
-        const response =
-            await fetch(
-                "/api/users/register",
-                {
-                    method:"POST",
+        const otpForm =
+            document.getElementById("otpForm");
 
-                    headers:{
-                        "Content-Type":
-                        "application/json"
-                    },
+        const verifyButton =
+            document.getElementById("verifyButton");
 
-                    body:JSON.stringify({
-                        username,
-                        email,
-                        password
-                    })
+        const otpMessage =
+            document.getElementById("otpMessage");
+
+
+        otpForm.addEventListener(
+            "submit",
+            async function (e) {
+
+                e.preventDefault();
+
+                const otp =
+                    otpInput.value.trim();
+
+
+                if (otp.length !== 6) {
+
+                    showMessage(
+                        otpMessage,
+                        "Please enter a valid 6-digit OTP.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                verifyButton.disabled = true;
+
+                verifyButton.innerHTML =
+                    '<span class="spinner"></span>Verifying...';
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/users/verify-otp",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+
+                                    email: userEmail,
+
+                                    otp: otp
+
+                                })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.message ||
+                            data.error ||
+                            "Invalid OTP."
+                        );
+                    }
+
+
+                    showMessage(
+                        otpMessage,
+                        data.message ||
+                        "Email verified successfully!",
+                        "success"
+                    );
+
+
+                    verifyButton.textContent =
+                        "Verified ✓";
+
+
+                    /*
+                     * Redirect to login
+                     */
+
+                    setTimeout(
+                        function () {
+
+                            window.location.href =
+                                "/api/users/login";
+
+                        },
+                        1200
+                    );
+
+
+                } catch (error) {
+
+                    showMessage(
+                        otpMessage,
+                        error.message ||
+                        "OTP verification failed.",
+                        "error"
+                    );
+
+
+                    verifyButton.disabled = false;
+
+                    verifyButton.textContent =
+                        "Verify OTP";
+                }
+
+            }
+        );
+
+
+        /* =========================
+           RESEND OTP
+        ========================== */
+
+        const resendButton =
+            document.getElementById("resendButton");
+
+
+        resendButton.addEventListener(
+            "click",
+            async function () {
+
+                if (!userEmail) {
+
+                    showMessage(
+                        otpMessage,
+                        "Email not found. Please register again.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                resendButton.disabled = true;
+
+                resendButton.textContent =
+                    "Sending...";
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/users/resend-otp",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+
+                                    email: userEmail
+
+                                })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.message ||
+                            data.error ||
+                            "Could not resend OTP."
+                        );
+                    }
+
+
+                    showMessage(
+                        otpMessage,
+                        data.message ||
+                        "New OTP sent successfully.",
+                        "success"
+                    );
+
+
+                } catch (error) {
+
+                    showMessage(
+                        otpMessage,
+                        error.message ||
+                        "Could not resend OTP.",
+                        "error"
+                    );
+
+                } finally {
+
+                    /*
+                     * Small cooldown
+                     */
+
+                    setTimeout(
+                        function () {
+
+                            resendButton.disabled = false;
+
+                            resendButton.textContent =
+                                "Resend OTP";
+
+                        },
+                        3000
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =========================
+           BACK BUTTON
+        ========================== */
+
+        document
+            .getElementById("backButton")
+            .addEventListener(
+                "click",
+                function () {
+
+                    document.getElementById(
+                        "otpSection"
+                    ).style.display = "none";
+
+
+                    document.getElementById(
+                        "registerSection"
+                    ).style.display = "block";
+
+
+                    otpInput.value = "";
+
+                    otpMessage.className =
+                        "message";
+
                 }
             );
 
-
-        const data =
-            await response.json();
-
-
-        if(!response.ok){
-
-            showMessage(
-                data.message ||
-                "Registration failed.",
-                "error"
-            );
-
-            return;
-        }
-
-
-        showMessage(
-            data.message ||
-            "OTP sent successfully.",
-            "success"
-        );
-
-
-        /* HIDE REGISTER */
-
-        document
-        .getElementById("registerForm")
-        .style.display = "none";
-
-
-        /* SHOW OTP */
-
-        document
-        .getElementById("otpSection")
-        .style.display = "block";
-
-
-        document
-        .getElementById("title")
-        .textContent = "Verify Email";
-
-
-        document
-        .getElementById("subtitle")
-        .textContent =
-        "Enter the verification code sent to your email.";
-
-
-    }catch(error){
-
-        console.error(error);
-
-        showMessage(
-            "Server error. Please try again.",
-            "error"
-        );
-
-    }finally{
-
-        btn.disabled = false;
-        btn.textContent = "Create Account";
-
-    }
-
-});
-
-
-/* OTP NUMBERS ONLY */
-
-document
-.getElementById("otp")
-.addEventListener("input",function(){
-
-    this.value =
-        this.value
-        .replace(/\D/g,"")
-        .slice(0,6);
-
-});
-
-
-/* VERIFY OTP */
-
-async function verifyOTP(){
-
-    const otp =
-        document
-        .getElementById("otp")
-        .value.trim();
-
-    const btn =
-        document
-        .getElementById("verifyBtn");
-
-
-    if(otp.length !== 6){
-
-        showMessage(
-            "Please enter the 6-digit OTP.",
-            "error"
-        );
-
-        return;
-    }
-
-
-    btn.disabled = true;
-    btn.textContent = "Verifying...";
-
-
-    try{
-
-        const response =
-            await fetch(
-                "/api/users/verify-otp",
-                {
-                    method:"POST",
-
-                    headers:{
-                        "Content-Type":
-                        "application/json"
-                    },
-
-                    body:JSON.stringify({
-                        email:userEmail,
-                        otp:otp
-                    })
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if(!response.ok){
-
-            showMessage(
-                data.message ||
-                "Invalid or expired OTP.",
-                "error"
-            );
-
-            return;
-        }
-
-
-        showMessage(
-            data.message ||
-            "Email verified successfully!",
-            "success"
-        );
-
-
-        btn.textContent = "Verified ✓";
-
-
-        setTimeout(function(){
-
-            window.location.href =
-                "/api/users/login";
-
-        },1200);
-
-
-    }catch(error){
-
-        console.error(error);
-
-        showMessage(
-            "Server error. Please try again.",
-            "error"
-        );
-
-    }finally{
-
-        if(btn.textContent === "Verifying..."){
-
-            btn.disabled = false;
-            btn.textContent = "Verify OTP";
-
-        }
-
-    }
-
-}
-
-
-/* RESEND OTP */
-
-async function resendOTP(){
-
-    if(!userEmail){
-
-        showMessage(
-            "Email not found.",
-            "error"
-        );
-
-        return;
-    }
-
-
-    try{
-
-        const response =
-            await fetch(
-                "/api/users/resend-otp",
-                {
-                    method:"POST",
-
-                    headers:{
-                        "Content-Type":
-                        "application/json"
-                    },
-
-                    body:JSON.stringify({
-                        email:userEmail
-                    })
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if(!response.ok){
-
-            showMessage(
-                data.message ||
-                "Unable to resend OTP.",
-                "error"
-            );
-
-            return;
-        }
-
-
-        showMessage(
-            data.message ||
-            "New OTP sent successfully.",
-            "success"
-        );
-
-
-    }catch(error){
-
-        console.error(error);
-
-        showMessage(
-            "Server error. Please try again.",
-            "error"
-        );
-
-    }
-
-}
-
-</script>
+    </script>
 
 </body>
 </html>
-```
