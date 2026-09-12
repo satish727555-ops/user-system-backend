@@ -9,12 +9,6 @@ const User = require("../models/User");
 const dbConnect = require("../models/dbConnect");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 const sendOTP = require("../middleware/utils/sendEmail");
-
-
-// ======================================================
-// HELPER FUNCTIONS
-// ======================================================
-
 const normalizeEmail = (email) => {
     return email.toLowerCase().trim();
 };
@@ -27,20 +21,9 @@ const getOTPExpiry = () => {
     return new Date(Date.now() + 5 * 60 * 1000);
 };
 
-
-// ======================================================
-// REGISTER PAGE
-// ======================================================
-
 router.get("/register", (req, res) => {
     res.render("register");
 });
-
-
-// ======================================================
-// REGISTER USER + SEND OTP
-// ======================================================
-
 router.post("/register", async (req, res) => {
 
     try {
@@ -56,11 +39,6 @@ router.post("/register", async (req, res) => {
 
         const userName = username || name;
 
-
-        // ------------------------------
-        // Required fields
-        // ------------------------------
-
         if (!userName || !email || !password) {
 
             return res.status(400).json({
@@ -71,9 +49,7 @@ router.post("/register", async (req, res) => {
         }
 
 
-        // ------------------------------
-        // Username validation
-        // ------------------------------
+      
 
         if (userName.trim().length < 3) {
 
@@ -84,11 +60,6 @@ router.post("/register", async (req, res) => {
 
         }
 
-
-        // ------------------------------
-        // Password validation
-        // ------------------------------
-
         if (password.length < 8) {
 
             return res.status(400).json({
@@ -98,17 +69,7 @@ router.post("/register", async (req, res) => {
 
         }
 
-
-        // ------------------------------
-        // Normalize email
-        // ------------------------------
-
         const normalizedEmail = normalizeEmail(email);
-
-
-        // ------------------------------
-        // Check existing user
-        // ------------------------------
 
         const existingUser = await User.findOne({
             email: normalizedEmail
@@ -124,27 +85,13 @@ router.post("/register", async (req, res) => {
 
         }
 
-
-        // ------------------------------
-        // Generate OTP
-        // ------------------------------
-
         const otp = generateOTP();
 
-
-        // ------------------------------
-        // Hash password
-        // ------------------------------
 
         const hashedPassword = await bcrypt.hash(
             password,
             12
         );
-
-
-        // ------------------------------
-        // Create user
-        // ------------------------------
 
         const user = await User.create({
 
@@ -161,11 +108,6 @@ router.post("/register", async (req, res) => {
             isVerified: false
 
         });
-
-
-        // ------------------------------
-        // Send OTP Email
-        // ------------------------------
 
         try {
 
@@ -193,11 +135,6 @@ router.post("/register", async (req, res) => {
             });
 
         }
-
-
-        // ------------------------------
-        // Success
-        // ------------------------------
 
         return res.status(201).json({
 
@@ -228,11 +165,6 @@ router.post("/register", async (req, res) => {
 
 });
 
-
-// ======================================================
-// VERIFY OTP
-// ======================================================
-
 router.post("/verify-otp", async (req, res) => {
 
     try {
@@ -244,11 +176,6 @@ router.post("/verify-otp", async (req, res) => {
             email,
             otp
         } = req.body;
-
-
-        // ------------------------------
-        // Required fields
-        // ------------------------------
 
         if (!email || !otp) {
 
@@ -263,18 +190,8 @@ router.post("/verify-otp", async (req, res) => {
 
         }
 
-
-        // ------------------------------
-        // Normalize email
-        // ------------------------------
-
         const normalizedEmail =
             normalizeEmail(email);
-
-
-        // ------------------------------
-        // Find user
-        // ------------------------------
 
         const user = await User.findOne({
 
@@ -295,12 +212,6 @@ router.post("/verify-otp", async (req, res) => {
             });
 
         }
-
-
-        // ------------------------------
-        // Already verified
-        // ------------------------------
-
         if (user.isVerified) {
 
             return res.status(409).json({
@@ -313,12 +224,6 @@ router.post("/verify-otp", async (req, res) => {
             });
 
         }
-
-
-        // ------------------------------
-        // OTP exists?
-        // ------------------------------
-
         if (!user.otp || !user.otpExpires) {
 
             return res.status(400).json({
@@ -332,11 +237,6 @@ router.post("/verify-otp", async (req, res) => {
 
         }
 
-
-        // ------------------------------
-        // OTP expiry
-        // ------------------------------
-
         if (user.otpExpires < new Date()) {
 
             return res.status(400).json({
@@ -349,11 +249,6 @@ router.post("/verify-otp", async (req, res) => {
             });
 
         }
-
-
-        // ------------------------------
-        // Compare OTP
-        // ------------------------------
 
         if (
             String(user.otp) !==
@@ -370,12 +265,6 @@ router.post("/verify-otp", async (req, res) => {
             });
 
         }
-
-
-        // ==================================================
-        // OTP VERIFIED
-        // ==================================================
-
         user.isVerified = true;
 
         user.otp = null;
@@ -384,11 +273,6 @@ router.post("/verify-otp", async (req, res) => {
 
 
         await user.save();
-
-
-        // ------------------------------
-        // Send success response
-        // ------------------------------
 
         return res.status(200).json({
 
@@ -421,12 +305,6 @@ router.post("/verify-otp", async (req, res) => {
     }
 
 });
-
-
-// ======================================================
-// RESEND OTP
-// ======================================================
-
 router.post("/resend-otp", async (req, res) => {
 
     try {
@@ -437,11 +315,6 @@ router.post("/resend-otp", async (req, res) => {
         const {
             email
         } = req.body;
-
-
-        // ------------------------------
-        // Email required
-        // ------------------------------
 
         if (!email) {
 
@@ -459,11 +332,6 @@ router.post("/resend-otp", async (req, res) => {
 
         const normalizedEmail =
             normalizeEmail(email);
-
-
-        // ------------------------------
-        // Find user
-        // ------------------------------
 
         const user = await User.findOne({
 
@@ -485,11 +353,6 @@ router.post("/resend-otp", async (req, res) => {
 
         }
 
-
-        // ------------------------------
-        // Already verified
-        // ------------------------------
-
         if (user.isVerified) {
 
             return res.status(409).json({
@@ -503,11 +366,6 @@ router.post("/resend-otp", async (req, res) => {
 
         }
 
-
-        // ------------------------------
-        // Generate new OTP
-        // ------------------------------
-
         const otp = generateOTP();
 
 
@@ -517,11 +375,6 @@ router.post("/resend-otp", async (req, res) => {
 
 
         await user.save();
-
-
-        // ------------------------------
-        // Send new OTP
-        // ------------------------------
 
         await sendOTP(
             normalizedEmail,
@@ -559,20 +412,11 @@ router.post("/resend-otp", async (req, res) => {
 });
 
 
-// ======================================================
-// LOGIN PAGE
-// ======================================================
-
 router.get("/login", (req, res) => {
 
     res.render("login");
 
 });
-
-
-// ======================================================
-// LOGIN USER
-// ======================================================
 
 router.post("/login", async (req, res) => {
 
@@ -585,11 +429,6 @@ router.post("/login", async (req, res) => {
             email,
             password
         } = req.body;
-
-
-        // ------------------------------
-        // Required fields
-        // ------------------------------
 
         if (!email || !password) {
 
@@ -607,11 +446,6 @@ router.post("/login", async (req, res) => {
 
         const normalizedEmail =
             normalizeEmail(email);
-
-
-        // ------------------------------
-        // Find user
-        // ------------------------------
 
         const user = await User.findOne({
 
@@ -633,11 +467,6 @@ router.post("/login", async (req, res) => {
 
         }
 
-
-        // ------------------------------
-        // Verify email
-        // ------------------------------
-
         if (!user.isVerified) {
 
             return res.status(403).json({
@@ -650,11 +479,6 @@ router.post("/login", async (req, res) => {
             });
 
         }
-
-
-        // ------------------------------
-        // Compare password
-        // ------------------------------
 
         const validPassword =
             await bcrypt.compare(
@@ -675,12 +499,6 @@ router.post("/login", async (req, res) => {
             });
 
         }
-
-
-        // ------------------------------
-        // Check JWT secret
-        // ------------------------------
-
         if (!process.env.JWT_SECRET) {
 
             console.error(
@@ -698,11 +516,6 @@ router.post("/login", async (req, res) => {
 
         }
 
-
-        // ------------------------------
-        // Create JWT
-        // ------------------------------
-
         const token = jwt.sign(
 
             {
@@ -717,11 +530,6 @@ router.post("/login", async (req, res) => {
             }
 
         );
-
-
-        // ------------------------------
-        // Login success
-        // ------------------------------
 
         return res.status(200).json({
 
@@ -765,12 +573,6 @@ router.post("/login", async (req, res) => {
     }
 
 });
-
-
-// ======================================================
-// PROFILE
-// ======================================================
-
 router.get(
     "/profile",
     protect,
@@ -831,12 +633,6 @@ router.get(
 
     }
 );
-
-
-// ======================================================
-// ADMIN
-// ======================================================
-
 router.get(
     "/admin",
     protect,
@@ -854,10 +650,4 @@ router.get(
 
     }
 );
-
-
-// ======================================================
-// EXPORT
-// ======================================================
-
 module.exports = router;
