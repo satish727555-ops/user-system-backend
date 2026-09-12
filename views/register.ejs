@@ -14,26 +14,34 @@
             font-family: Arial, Helvetica, sans-serif;
         }
 
+        html {
+            width: 100%;
+            min-height: 100%;
+        }
+
         body {
             min-height: 100dvh;
             width: 100%;
+
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+
+            padding: 30px 20px;
+
+            position: relative;
             overflow-x: hidden;
             overflow-y: auto;
-            position: relative;
 
             background:
                 radial-gradient(
-                    circle at 10% 15%,
-                    rgba(0, 210, 255, 0.20),
+                    circle at 10% 10%,
+                    rgba(0, 210, 255, 0.22),
                     transparent 28%
                 ),
                 radial-gradient(
-                    circle at 90% 85%,
-                    rgba(124, 58, 237, 0.25),
+                    circle at 90% 90%,
+                    rgba(124, 58, 237, 0.28),
                     transparent 30%
                 ),
                 linear-gradient(
@@ -44,13 +52,11 @@
                 );
         }
 
-        /* Grid Background */
+        /* Background grid */
         body::before {
             content: "";
-            position: absolute;
+            position: fixed;
             inset: 0;
-
-            opacity: 0.35;
 
             background-image:
                 linear-gradient(
@@ -65,38 +71,42 @@
 
             background-size: 45px 45px;
 
+            opacity: 0.4;
+
             pointer-events: none;
         }
 
-        /* Glow */
+        /* Background glow */
         body::after {
             content: "";
-            position: absolute;
 
-            width: 500px;
-            height: 500px;
+            position: fixed;
+
+            width: 450px;
+            height: 450px;
+
+            right: -200px;
+            top: -200px;
 
             border-radius: 50%;
-
-            right: -220px;
-            top: -220px;
 
             background:
                 radial-gradient(
                     circle,
-                    rgba(0, 217, 255, 0.25),
+                    rgba(0, 200, 255, 0.22),
                     transparent 68%
                 );
 
-            filter: blur(8px);
+            filter: blur(10px);
 
             pointer-events: none;
         }
 
-        /* Main Container */
+        /* Main */
         .container {
             width: 100%;
-            max-width: 440px;
+            max-width: 430px;
+
             position: relative;
             z-index: 2;
         }
@@ -105,21 +115,21 @@
         .card {
             width: 100%;
 
+            padding: 34px 32px;
+
+            border-radius: 24px;
+
             background: rgba(255,255,255,0.97);
 
-            border-radius: 26px;
-
-            padding: 36px 34px;
-
             box-shadow:
-                0 30px 80px rgba(0,0,0,0.45),
-                0 0 0 1px rgba(255,255,255,0.25);
+                0 30px 80px rgba(0,0,0,0.48),
+                0 0 0 1px rgba(255,255,255,0.20);
 
             position: relative;
             overflow: hidden;
         }
 
-        /* Top line */
+        /* Top gradient */
         .card::before {
             content: "";
 
@@ -142,20 +152,20 @@
 
         /* Logo */
         .logo {
-            width: 62px;
-            height: 62px;
+            width: 60px;
+            height: 60px;
 
-            border-radius: 18px;
-
-            margin: 0 auto 16px;
+            margin: 0 auto 15px;
 
             display: flex;
             justify-content: center;
             align-items: center;
 
+            border-radius: 17px;
+
             color: white;
 
-            font-size: 22px;
+            font-size: 21px;
             font-weight: 800;
 
             background:
@@ -167,17 +177,16 @@
                 );
 
             box-shadow:
-                0 12px 30px rgba(0,114,255,0.30);
+                0 12px 28px rgba(0,114,255,0.30);
         }
 
-        /* Heading */
         .title {
             text-align: center;
 
-            font-size: 28px;
-            font-weight: 800;
-
             color: #111827;
+
+            font-size: 27px;
+            font-weight: 800;
 
             margin-bottom: 7px;
         }
@@ -185,54 +194,52 @@
         .subtitle {
             text-align: center;
 
+            color: #6b7280;
+
             font-size: 13px;
 
             line-height: 1.6;
 
-            color: #6b7280;
-
-            margin-bottom: 26px;
+            margin-bottom: 25px;
         }
 
-        /* Form Group */
+        /* Fields */
         .group {
-            margin-bottom: 17px;
+            margin-bottom: 16px;
         }
 
         label {
             display: block;
 
-            margin-bottom: 7px;
+            color: #374151;
 
             font-size: 13px;
             font-weight: 700;
 
-            color: #374151;
+            margin-bottom: 7px;
         }
 
-        /* Input */
         .input {
             position: relative;
         }
 
         .input input {
             width: 100%;
+            height: 50px;
 
-            height: 51px;
+            padding: 0 14px;
 
-            border: 1px solid #d9dee8;
+            border: 1px solid #d8dee8;
 
-            border-radius: 12px;
+            border-radius: 11px;
 
             outline: none;
 
-            padding: 0 15px;
-
-            font-size: 14px;
+            background: #f9fafb;
 
             color: #111827;
 
-            background: #f9fafb;
+            font-size: 14px;
 
             transition: 0.25s;
         }
@@ -250,7 +257,7 @@
             color: #9ca3af;
         }
 
-        /* Password Eye */
+        /* Password */
         .password-input {
             padding-right: 48px !important;
         }
@@ -258,22 +265,21 @@
         .eye {
             position: absolute;
 
-            right: 14px;
+            right: 12px;
             top: 50%;
 
             transform: translateY(-50%);
 
             border: none;
-
             background: transparent;
 
             cursor: pointer;
 
-            font-size: 18px;
+            font-size: 17px;
+
+            padding: 5px;
 
             color: #6b7280;
-
-            padding: 4px;
         }
 
         .eye:hover {
@@ -283,21 +289,19 @@
         /* Button */
         .btn {
             width: 100%;
+            height: 50px;
 
-            height: 51px;
-
-            margin-top: 7px;
+            margin-top: 6px;
 
             border: none;
-
-            border-radius: 12px;
-
-            cursor: pointer;
+            border-radius: 11px;
 
             color: white;
 
             font-size: 14px;
             font-weight: 700;
+
+            cursor: pointer;
 
             background:
                 linear-gradient(
@@ -320,15 +324,9 @@
                 0 16px 30px rgba(0,114,255,0.35);
         }
 
-        .btn:active {
-            transform: translateY(0);
-        }
-
         .btn:disabled {
-            cursor: not-allowed;
-
             opacity: 0.7;
-
+            cursor: not-allowed;
             transform: none;
         }
 
@@ -336,17 +334,17 @@
         .message {
             display: none;
 
-            margin-top: 15px;
+            margin-top: 14px;
 
-            padding: 11px 12px;
+            padding: 10px 12px;
 
-            border-radius: 10px;
+            border-radius: 9px;
+
+            text-align: center;
 
             font-size: 12px;
 
             line-height: 1.5;
-
-            text-align: center;
         }
 
         .message.success {
@@ -373,19 +371,19 @@
         .login {
             text-align: center;
 
-            margin-top: 21px;
-
-            font-size: 13px;
+            margin-top: 19px;
 
             color: #6b7280;
+
+            font-size: 13px;
         }
 
         .login a {
             color: #0072ff;
 
-            text-decoration: none;
-
             font-weight: 700;
+
+            text-decoration: none;
         }
 
         .login a:hover {
@@ -396,33 +394,33 @@
         .security {
             text-align: center;
 
-            margin-top: 17px;
+            margin-top: 15px;
 
             color: #9ca3af;
 
             font-size: 10px;
         }
 
-        /* OTP Section */
+        /* OTP */
         #otpSection {
             display: none;
         }
 
         .otp-icon {
-            width: 58px;
-            height: 58px;
+            width: 55px;
+            height: 55px;
 
-            margin: 0 auto 15px;
-
-            border-radius: 16px;
+            margin: 0 auto 14px;
 
             display: flex;
             justify-content: center;
             align-items: center;
 
-            font-size: 25px;
+            border-radius: 16px;
 
             color: white;
+
+            font-size: 23px;
 
             background:
                 linear-gradient(
@@ -430,19 +428,15 @@
                     #0072ff,
                     #7c3aed
                 );
-
-            box-shadow:
-                0 12px 25px rgba(0,114,255,0.25);
         }
 
         .otp-title {
             text-align: center;
 
-            font-size: 22px;
-
-            font-weight: 800;
-
             color: #111827;
+
+            font-size: 21px;
+            font-weight: 800;
 
             margin-bottom: 7px;
         }
@@ -450,47 +444,43 @@
         .otp-text {
             text-align: center;
 
+            color: #6b7280;
+
             font-size: 12px;
 
             line-height: 1.6;
 
-            color: #6b7280;
-
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .otp-email {
-            font-weight: 700;
-
             color: #0072ff;
+
+            font-weight: 700;
 
             word-break: break-word;
         }
 
         .otp-input {
             width: 100%;
+            height: 55px;
 
-            height: 58px;
+            border: 1px solid #d8dee8;
 
-            border: 1px solid #d9dee8;
-
-            border-radius: 12px;
+            border-radius: 11px;
 
             outline: none;
 
+            background: #f9fafb;
+
             text-align: center;
 
-            letter-spacing: 8px;
+            letter-spacing: 7px;
 
-            font-size: 23px;
-
+            font-size: 21px;
             font-weight: 800;
 
             color: #111827;
-
-            background: #f9fafb;
-
-            transition: 0.25s;
         }
 
         .otp-input:focus {
@@ -505,7 +495,7 @@
         .resend {
             display: block;
 
-            margin: 15px auto 0;
+            margin: 14px auto 0;
 
             border: none;
 
@@ -514,7 +504,6 @@
             color: #0072ff;
 
             font-size: 12px;
-
             font-weight: 700;
 
             cursor: pointer;
@@ -527,7 +516,7 @@
         .back {
             display: block;
 
-            margin: 13px auto 0;
+            margin: 12px auto 0;
 
             border: none;
 
@@ -544,12 +533,14 @@
             color: #111827;
         }
 
-        /* Loading */
+        /* Spinner */
         .spinner {
             display: inline-block;
 
             width: 14px;
             height: 14px;
+
+            margin-right: 6px;
 
             border: 2px solid rgba(255,255,255,0.4);
 
@@ -560,8 +551,6 @@
             animation: spin 0.7s linear infinite;
 
             vertical-align: middle;
-
-            margin-right: 7px;
         }
 
         @keyframes spin {
@@ -570,111 +559,132 @@
             }
         }
 
-        /* =========================
+
+        /* ==================================
            MOBILE
-        ========================= */
+           ================================== */
 
         @media (max-width: 600px) {
 
             body {
                 min-height: 100dvh;
 
-                padding: 18px 12px;
+                /*
+                 * IMPORTANT:
+                 * Card ke around proper margin
+                 */
+                padding: 24px 16px;
 
                 align-items: center;
-
-                overflow-y: auto;
             }
 
             .container {
                 width: 100%;
 
-                max-width: 370px;
-
-                padding: 0;
+                /*
+                 * Card screen se chhota rahega
+                 */
+                max-width: 360px;
             }
 
             .card {
                 width: 100%;
 
-                min-height: auto;
-
-                padding: 26px 20px;
+                padding: 25px 20px;
 
                 border-radius: 20px;
 
+                /*
+                 * Full screen nahi
+                 */
+                min-height: auto;
+
                 box-shadow:
-                    0 20px 50px rgba(0,0,0,0.40);
+                    0 18px 45px rgba(0,0,0,0.42);
             }
 
             .logo {
-                width: 54px;
-                height: 54px;
-
-                border-radius: 16px;
-
-                margin-bottom: 12px;
-
-                font-size: 19px;
-            }
-
-            .title {
-                font-size: 24px;
-
-                margin-bottom: 6px;
-            }
-
-            .subtitle {
-                font-size: 12px;
-
-                margin-bottom: 21px;
-            }
-
-            .group {
-                margin-bottom: 13px;
-            }
-
-            label {
-                font-size: 12px;
-
-                margin-bottom: 6px;
-            }
-
-            .input input {
-                height: 47px;
-
-                font-size: 13px;
-
-                border-radius: 11px;
-            }
-
-            .btn {
-                height: 48px;
-
-                font-size: 13px;
-
-                border-radius: 11px;
-            }
-
-            .login {
-                margin-top: 17px;
-
-                font-size: 12px;
-            }
-
-            .security {
-                margin-top: 14px;
-
-                font-size: 10px;
-            }
-
-            .otp-icon {
                 width: 52px;
                 height: 52px;
 
-                font-size: 22px;
+                margin-bottom: 11px;
 
+                border-radius: 15px;
+
+                font-size: 18px;
+            }
+
+            .title {
+                font-size: 23px;
+
+                margin-bottom: 5px;
+            }
+
+            .subtitle {
+                font-size: 11px;
+
+                margin-bottom: 19px;
+            }
+
+            .group {
                 margin-bottom: 12px;
+            }
+
+            label {
+                font-size: 11px;
+
+                margin-bottom: 5px;
+            }
+
+            .input input {
+                height: 45px;
+
+                padding: 0 12px;
+
+                border-radius: 10px;
+
+                font-size: 12px;
+            }
+
+            .password-input {
+                padding-right: 44px !important;
+            }
+
+            .eye {
+                right: 10px;
+
+                font-size: 16px;
+            }
+
+            .btn {
+                height: 46px;
+
+                margin-top: 5px;
+
+                border-radius: 10px;
+
+                font-size: 12px;
+            }
+
+            .login {
+                margin-top: 15px;
+
+                font-size: 11px;
+            }
+
+            .security {
+                margin-top: 12px;
+
+                font-size: 9px;
+            }
+
+            .otp-icon {
+                width: 50px;
+                height: 50px;
+
+                margin-bottom: 11px;
+
+                font-size: 21px;
             }
 
             .otp-title {
@@ -682,26 +692,27 @@
             }
 
             .otp-text {
-                font-size: 12px;
+                font-size: 11px;
 
-                margin-bottom: 17px;
+                margin-bottom: 15px;
             }
 
             .otp-input {
-                height: 52px;
+                height: 50px;
 
-                font-size: 20px;
+                font-size: 19px;
 
                 letter-spacing: 6px;
             }
         }
 
-        /* Very Small Phones */
+
+        /* Extra small phones */
 
         @media (max-width: 360px) {
 
             body {
-                padding: 14px 9px;
+                padding: 20px 13px;
             }
 
             .container {
@@ -714,24 +725,30 @@
                 border-radius: 18px;
             }
 
+            .logo {
+                width: 48px;
+                height: 48px;
+            }
+
             .title {
-                font-size: 22px;
+                font-size: 21px;
             }
 
             .subtitle {
-                font-size: 11px;
+                font-size: 10px;
             }
 
             .input input {
-                height: 45px;
+                height: 43px;
             }
 
             .btn {
-                height: 46px;
+                height: 44px;
             }
         }
     </style>
 </head>
+
 
 <body>
 
@@ -739,9 +756,7 @@
 
         <div class="card">
 
-            <!-- =========================
-                 REGISTER SECTION
-            ========================== -->
+            <!-- REGISTER -->
 
             <div id="registerSection">
 
@@ -757,9 +772,11 @@
                     Create your account and get started securely.
                 </p>
 
+
                 <form id="registerForm">
 
                     <!-- Username -->
+
                     <div class="group">
 
                         <label for="username">
@@ -784,6 +801,7 @@
 
 
                     <!-- Email -->
+
                     <div class="group">
 
                         <label for="email">
@@ -807,6 +825,7 @@
 
 
                     <!-- Password -->
+
                     <div class="group">
 
                         <label for="password">
@@ -830,7 +849,6 @@
                                 type="button"
                                 class="eye"
                                 id="togglePassword"
-                                aria-label="Show password"
                             >
                                 👁
                             </button>
@@ -840,7 +858,6 @@
                     </div>
 
 
-                    <!-- Register Button -->
                     <button
                         type="submit"
                         class="btn"
@@ -852,14 +869,12 @@
                 </form>
 
 
-                <!-- Message -->
                 <div
                     id="message"
                     class="message"
                 ></div>
 
 
-                <!-- Login -->
                 <div class="login">
 
                     Already have an account?
@@ -871,7 +886,6 @@
                 </div>
 
 
-                <!-- Security -->
                 <div class="security">
                     🔒 Your information is securely protected
                 </div>
@@ -879,9 +893,7 @@
             </div>
 
 
-            <!-- =========================
-                 OTP SECTION
-            ========================== -->
+            <!-- OTP -->
 
             <div id="otpSection">
 
@@ -963,16 +975,10 @@
 
     <script>
 
-        /* =========================
-           VARIABLES
-        ========================== */
-
         let userEmail = "";
 
 
-        /* =========================
-           PASSWORD TOGGLE
-        ========================== */
+        /* PASSWORD EYE */
 
         const password =
             document.getElementById("password");
@@ -991,30 +997,19 @@
 
                     togglePassword.textContent = "🙈";
 
-                    togglePassword.setAttribute(
-                        "aria-label",
-                        "Hide password"
-                    );
-
                 } else {
 
                     password.type = "password";
 
                     togglePassword.textContent = "👁";
 
-                    togglePassword.setAttribute(
-                        "aria-label",
-                        "Show password"
-                    );
                 }
 
             }
         );
 
 
-        /* =========================
-           MESSAGE FUNCTION
-        ========================== */
+        /* MESSAGE */
 
         function showMessage(
             element,
@@ -1029,9 +1024,7 @@
         }
 
 
-        /* =========================
-           REGISTER
-        ========================== */
+        /* REGISTER */
 
         const registerForm =
             document.getElementById("registerForm");
@@ -1051,18 +1044,24 @@
 
                 message.className = "message";
 
+
                 const username =
-                    document.getElementById("username")
+                    document
+                    .getElementById("username")
                     .value
                     .trim();
+
 
                 const email =
-                    document.getElementById("email")
+                    document
+                    .getElementById("email")
                     .value
                     .trim();
 
+
                 const passwordValue =
-                    document.getElementById("password")
+                    document
+                    .getElementById("password")
                     .value;
 
 
@@ -1136,16 +1135,8 @@
                     }
 
 
-                    /*
-                     * Save email for OTP
-                     */
-
                     userEmail = email;
 
-
-                    /*
-                     * Show OTP section
-                     */
 
                     document.getElementById(
                         "registerSection"
@@ -1169,10 +1160,6 @@
                         "success"
                     );
 
-
-                    /*
-                     * Focus OTP
-                     */
 
                     document
                         .getElementById("otp")
@@ -1200,9 +1187,7 @@
         );
 
 
-        /* =========================
-           OTP ONLY NUMBERS
-        ========================== */
+        /* OTP ONLY NUMBERS */
 
         const otpInput =
             document.getElementById("otp");
@@ -1221,9 +1206,7 @@
         );
 
 
-        /* =========================
-           VERIFY OTP
-        ========================== */
+        /* VERIFY OTP */
 
         const otpForm =
             document.getElementById("otpForm");
@@ -1240,6 +1223,7 @@
             async function (e) {
 
                 e.preventDefault();
+
 
                 const otp =
                     otpInput.value.trim();
@@ -1313,10 +1297,6 @@
                         "Verified ✓";
 
 
-                    /*
-                     * Redirect to login
-                     */
-
                     setTimeout(
                         function () {
 
@@ -1348,9 +1328,7 @@
         );
 
 
-        /* =========================
-           RESEND OTP
-        ========================== */
+        /* RESEND OTP */
 
         const resendButton =
             document.getElementById("resendButton");
@@ -1433,10 +1411,6 @@
 
                 } finally {
 
-                    /*
-                     * Small cooldown
-                     */
-
                     setTimeout(
                         function () {
 
@@ -1455,9 +1429,7 @@
         );
 
 
-        /* =========================
-           BACK BUTTON
-        ========================== */
+        /* BACK */
 
         document
             .getElementById("backButton")
