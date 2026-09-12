@@ -1,5 +1,6 @@
+﻿const express = require("express");
+const router = express.Router();
 
-const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -8,10 +9,7 @@ const dbConnect = require("../models/dbConnect");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 const sendOTP = require("../middleware/utils/sendEmail");
 
-const router = express.Router();
-
-// Helpers
-const normalizeEmail = email => email.toLowerCase().trim();
+const normalizeEmail = (email) => email.toLowerCase().trim();
 
 const generateOTP = () =>
     Math.floor(100000 + Math.random() * 900000).toString();
@@ -19,35 +17,37 @@ const generateOTP = () =>
 const getOTPExpiry = () =>
     new Date(Date.now() + 5 * 60 * 1000);
 
-// Register Page
 router.get("/register", (req, res) => {
     res.render("register");
 });
 
-// Register
 router.post("/register", async (req, res) => {
     try {
         await dbConnect();
 
-        const { name, email, password } = req.body;
+        const { username, name, email, password } = req.body;
+        const userName = username || name;
 
-        if (!name || !email || !password)
+        if (!userName || !email || !password) {
             return res.status(400).json({
                 success: false,
-                message: "Name, email and password are required."
+                message: "Username, email and password are required."
             });
+        }
 
-        if (name.trim().length < 3)
+        if (userName.trim().length < 3) {
             return res.status(400).json({
                 success: false,
-                message: "Name must contain at least 3 characters."
+                message: "Username must contain at least 3 characters."
             });
+        }
 
-        if (password.length < 8)
+        if (password.length < 8) {
             return res.status(400).json({
                 success: false,
                 message: "Password must contain at least 8 characters."
             });
+        }
 
         const normalizedEmail = normalizeEmail(email);
 
@@ -55,19 +55,21 @@ router.post("/register", async (req, res) => {
             email: normalizedEmail
         });
 
-        if (existingUser)
+        if (existingUser) {
             return res.status(409).json({
                 success: false,
                 message: "User already exists."
             });
+        }
 
         const otp = generateOTP();
+        const hashedPassword = await bcrypt.hash(password, 12);
 
         const user = await User.create({
-            name: name.trim(),
+            name: userName.trim(),
             email: normalizedEmail,
-            password: await bcrypt.hash(password, 12),
-            otp,
+            password: hashedPassword,
+            otp: otp,
             otpExpires: getOTPExpiry(),
             isVerified: false
         });
@@ -91,7 +93,7 @@ router.post("/register", async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Register Error:", error.message);
+        console.error("Register Error:", error);
 
         res.status(500).json({
             success: false,
@@ -100,52 +102,57 @@ router.post("/register", async (req, res) => {
     }
 });
 
-// Verify OTP
 router.post("/verify-otp", async (req, res) => {
     try {
         await dbConnect();
 
         const { email, otp } = req.body;
 
-        if (!email || !otp)
+        if (!email || !otp) {
             return res.status(400).json({
                 success: false,
                 message: "Email and OTP are required."
             });
+        }
 
         const user = await User.findOne({
             email: normalizeEmail(email)
         });
 
-        if (!user)
+        if (!user) {
             return res.status(404).json({
                 success: false,
                 message: "User not found."
             });
+        }
 
-        if (user.isVerified)
+        if (user.isVerified) {
             return res.status(409).json({
                 success: false,
                 message: "Email is already verified."
             });
+        }
 
-        if (!user.otp || !user.otpExpires)
+        if (!user.otp || !user.otpExpires) {
             return res.status(400).json({
                 success: false,
                 message: "OTP is not available."
             });
+        }
 
-        if (user.otpExpires < new Date())
+        if (user.otpExpires < new Date()) {
             return res.status(400).json({
                 success: false,
                 message: "OTP has expired."
             });
+        }
 
-        if (user.otp !== otp.toString())
+        if (user.otp !== otp.toString()) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid OTP."
             });
+        }
 
         user.isVerified = true;
         user.otp = null;
@@ -159,7 +166,7 @@ router.post("/verify-otp", async (req, res) => {
         });
 
     } catch (error) {
-        console.error("OTP Error:", error.message);
+        console.error("OTP Error:", error);
 
         res.status(500).json({
             success: false,
@@ -168,61 +175,125 @@ router.post("/verify-otp", async (req, res) => {
     }
 });
 
-// Login Page
+router.post("/resend-otp", async (req, res) => {
+    try {
+        await dbConnect();
+
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: "Email is required."
+            });
+        }
+
+        const normalizedEmail = normalizeEmail(email);
+
+        const user = await User.findOne({
+            email: normalizedEmail
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found."
+            });
+        }
+
+        if (user.isVerified) {
+            return res.status(409).json({
+                success: false,
+                message: "Email is already verified."
+            });
+        }
+
+        const otp = generateOTP();
+
+        user.otp = otp;
+        user.otpExpires = getOTPExpiry();
+
+        await user.save();
+
+        await sendOTP(normalizedEmail, otp);
+
+        res.json({
+            success: true,
+            message: "New OTP sent successfully."
+        });
+
+    } catch (error) {
+        console.error("Resend OTP Error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Unable to resend OTP."
+        });
+    }
+});
+
 router.get("/login", (req, res) => {
     res.render("login");
 });
 
-// Login
 router.post("/login", async (req, res) => {
     try {
         await dbConnect();
 
         const { email, password } = req.body;
 
-        if (!email || !password)
+        if (!email || !password) {
             return res.status(400).json({
                 success: false,
                 message: "Email and password are required."
             });
+        }
 
         const user = await User.findOne({
             email: normalizeEmail(email)
         });
 
-        if (!user)
+        if (!user) {
             return res.status(401).json({
                 success: false,
                 message: "Invalid email or password."
             });
+        }
 
-        if (!user.isVerified)
+        if (!user.isVerified) {
             return res.status(403).json({
                 success: false,
                 message: "Please verify your email first."
             });
+        }
 
         const validPassword = await bcrypt.compare(
             password,
             user.password
         );
 
-        if (!validPassword)
+        if (!validPassword) {
             return res.status(401).json({
                 success: false,
                 message: "Invalid email or password."
             });
+        }
 
         const token = jwt.sign(
-            { id: user._id, role: user.role },
+            {
+                id: user._id,
+                role: user.role
+            },
             process.env.JWT_SECRET,
-            { expiresIn: "1d" }
+            {
+                expiresIn: "1d"
+            }
         );
 
         res.json({
             success: true,
             message: "Login successful.",
-            token,
+            token: token,
             user: {
                 id: user._id,
                 name: user.name,
@@ -232,7 +303,7 @@ router.post("/login", async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Login Error:", error.message);
+        console.error("Login Error:", error);
 
         res.status(500).json({
             success: false,
@@ -241,7 +312,6 @@ router.post("/login", async (req, res) => {
     }
 });
 
-// Protected Profile
 router.get("/profile", protect, async (req, res) => {
     try {
         await dbConnect();
@@ -249,19 +319,20 @@ router.get("/profile", protect, async (req, res) => {
         const user = await User.findById(req.user.id)
             .select("-password -otp -otpExpires");
 
-        if (!user)
+        if (!user) {
             return res.status(404).json({
                 success: false,
                 message: "User not found."
             });
+        }
 
         res.json({
             success: true,
-            user
+            user: user
         });
 
     } catch (error) {
-        console.error("Profile Error:", error.message);
+        console.error("Profile Error:", error);
 
         res.status(500).json({
             success: false,
@@ -270,7 +341,6 @@ router.get("/profile", protect, async (req, res) => {
     }
 });
 
-// Admin
 router.get("/admin", protect, adminOnly, (req, res) => {
     res.json({
         success: true,

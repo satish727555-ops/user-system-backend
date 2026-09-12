@@ -1,1439 +1,586 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Create Account | User System</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            width: 100%;
-            min-height: 100%;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        body {
-            min-height: 100dvh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            padding: 30px 20px;
-
-            position: relative;
-            overflow-x: hidden;
-
-            /*
-             * Professional tech background
-             */
-            background:
-                linear-gradient(
-                    rgba(3, 7, 20, 0.72),
-                    rgba(5, 10, 30, 0.82)
-                ),
-                radial-gradient(
-                    circle at 15% 20%,
-                    rgba(0, 212, 255, 0.28),
-                    transparent 28%
-                ),
-                radial-gradient(
-                    circle at 85% 80%,
-                    rgba(124, 58, 237, 0.30),
-                    transparent 30%
-                ),
-                radial-gradient(
-                    circle at 50% 50%,
-                    rgba(20, 80, 150, 0.12),
-                    transparent 50%
-                ),
-                linear-gradient(
-                    135deg,
-                    #020617,
-                    #081329,
-                    #111a38,
-                    #050816
-                );
-
-            background-attachment: fixed;
-        }
-
-        /*
-         * Tech grid
-         */
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-
-            background-image:
-                linear-gradient(
-                    rgba(0, 212, 255, 0.055) 1px,
-                    transparent 1px
-                ),
-                linear-gradient(
-                    90deg,
-                    rgba(0, 212, 255, 0.055) 1px,
-                    transparent 1px
-                );
-
-            background-size: 45px 45px;
-
-            mask-image: linear-gradient(
-                to bottom,
-                black,
-                transparent 90%
-            );
-
-            pointer-events: none;
-        }
-
-        /*
-         * Large blue glow
-         */
-        body::after {
-            content: "";
-
-            position: fixed;
-
-            width: 520px;
-            height: 520px;
-
-            right: -180px;
-            top: -180px;
-
-            background: radial-gradient(
-                circle,
-                rgba(0, 212, 255, 0.18),
-                transparent 68%
-            );
-
-            filter: blur(20px);
-
-            pointer-events: none;
-        }
-
-        /*
-         * Extra tech glow
-         */
-        .background-glow {
-            position: fixed;
-
-            width: 450px;
-            height: 450px;
-
-            left: -200px;
-            bottom: -180px;
-
-            border-radius: 50%;
-
-            background: radial-gradient(
-                circle,
-                rgba(124, 58, 237, 0.25),
-                transparent 68%
-            );
-
-            filter: blur(25px);
-
-            pointer-events: none;
-        }
-
-        /*
-         * Decorative lines
-         */
-        .tech-line {
-            position: fixed;
-            width: 260px;
-            height: 1px;
-
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(0, 212, 255, 0.5),
-                transparent
-            );
-
-            transform: rotate(-35deg);
-
-            opacity: 0.45;
-
-            pointer-events: none;
-        }
-
-        .line-one {
-            left: -60px;
-            top: 20%;
-        }
-
-        .line-two {
-            right: -70px;
-            bottom: 22%;
-            transform: rotate(35deg);
-        }
-
-        /*
-         * Main container
-         */
-        .container {
-            width: 100%;
-            max-width: 430px;
-
-            position: relative;
-            z-index: 5;
-        }
-
-        /*
-         * Card
-         */
-        .card {
-            width: 100%;
-
-            padding: 34px 32px;
-
-            background: rgba(255, 255, 255, 0.97);
-
-            border: 1px solid rgba(255, 255, 255, 0.7);
-
-            border-radius: 24px;
-
-            box-shadow:
-                0 30px 80px rgba(0, 0, 0, 0.45),
-                0 0 0 1px rgba(255, 255, 255, 0.08);
-
-            position: relative;
-
-            overflow: hidden;
-
-            animation: cardAppear 0.6s ease;
-        }
-
-        @keyframes cardAppear {
-            from {
-                opacity: 0;
-                transform: translateY(20px) scale(0.98);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        /*
-         * Card top glow
-         */
-        .card::before {
-            content: "";
-
-            position: absolute;
-
-            top: 0;
-            left: 0;
-            right: 0;
-
-            height: 4px;
-
-            background: linear-gradient(
-                90deg,
-                #06b6d4,
-                #2563eb,
-                #7c3aed
-            );
-        }
-
-        /*
-         * Logo
-         */
-        .logo {
-            width: 62px;
-            height: 62px;
-
-            margin: 0 auto 14px;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            border-radius: 18px;
-
-            background: linear-gradient(
-                135deg,
-                #06b6d4,
-                #2563eb,
-                #7c3aed
-            );
-
-            color: white;
-
-            font-size: 26px;
-            font-weight: 800;
-
-            box-shadow:
-                0 10px 25px rgba(37, 99, 235, 0.30);
-        }
-
-        /*
-         * Heading
-         */
-        h1 {
-            text-align: center;
-
-            color: #111827;
-
-            font-size: 27px;
-
-            margin-bottom: 7px;
-
-            letter-spacing: -0.5px;
-        }
-
-        .subtitle {
-            text-align: center;
-
-            color: #6b7280;
-
-            font-size: 14px;
-
-            line-height: 1.5;
-
-            margin-bottom: 25px;
-        }
-
-        /*
-         * Form group
-         */
-        .form-group {
-            margin-bottom: 17px;
-        }
-
-        label {
-            display: block;
-
-            color: #374151;
-
-            font-size: 13px;
-
-            font-weight: 700;
-
-            margin-bottom: 7px;
-        }
-
-        /*
-         * Input wrapper
-         */
-        .input-box {
-            position: relative;
-        }
-
-        /*
-         * Inputs
-         */
-        input {
-            width: 100%;
-
-            height: 49px;
-
-            padding: 0 14px;
-
-            border: 1px solid #d9dee8;
-
-            border-radius: 12px;
-
-            outline: none;
-
-            font-size: 14px;
-
-            color: #111827;
-
-            background: #f9fafb;
-
-            transition: 0.25s;
-        }
-
-        input:hover {
-            border-color: #b8c1d1;
-        }
-
-        input:focus {
-            background: #ffffff;
-
-            border-color: #2563eb;
-
-            box-shadow:
-                0 0 0 4px rgba(37, 99, 235, 0.10);
-        }
-
-        /*
-         * Password input
-         */
-        .password-input {
-            padding-right: 48px;
-        }
-
-        /*
-         * Eye button
-         */
-        .eye-button {
-            position: absolute;
-
-            right: 10px;
-            top: 50%;
-
-            transform: translateY(-50%);
-
-            width: 34px;
-            height: 34px;
-
-            border: none;
-
-            background: transparent;
-
-            cursor: pointer;
-
-            color: #6b7280;
-
-            font-size: 17px;
-
-            border-radius: 8px;
-        }
-
-        .eye-button:hover {
-            background: #eef2ff;
-
-            color: #2563eb;
-        }
-
-        /*
-         * Main button
-         */
-        .main-button {
-            width: 100%;
-
-            height: 50px;
-
-            border: none;
-
-            border-radius: 12px;
-
-            background: linear-gradient(
-                135deg,
-                #06b6d4,
-                #2563eb,
-                #7c3aed
-            );
-
-            color: white;
-
-            font-size: 15px;
-
-            font-weight: 700;
-
-            cursor: pointer;
-
-            transition: 0.25s;
-
-            box-shadow:
-                0 10px 22px rgba(37, 99, 235, 0.25);
-        }
-
-        .main-button:hover {
-            transform: translateY(-1px);
-
-            box-shadow:
-                0 14px 28px rgba(37, 99, 235, 0.32);
-        }
-
-        .main-button:active {
-            transform: translateY(0);
-        }
-
-        .main-button:disabled {
-            opacity: 0.65;
-
-            cursor: not-allowed;
-
-            transform: none;
-        }
-
-        /*
-         * Message
-         */
-        .message {
-            margin-top: 14px;
-
-            padding: 11px 12px;
-
-            border-radius: 10px;
-
-            font-size: 13px;
-
-            text-align: center;
-
-            display: none;
-        }
-
-        .message.show {
-            display: block;
-        }
-
-        .message.success {
-            background: #ecfdf5;
-
-            color: #047857;
-
-            border: 1px solid #a7f3d0;
-        }
-
-        .message.error {
-            background: #fef2f2;
-
-            color: #b91c1c;
-
-            border: 1px solid #fecaca;
-        }
-
-        /*
-         * Login link
-         */
-        .login-text {
-            text-align: center;
-
-            margin-top: 20px;
-
-            font-size: 13px;
-
-            color: #6b7280;
-        }
-
-        .login-text a {
-            color: #2563eb;
-
-            text-decoration: none;
-
-            font-weight: 700;
-        }
-
-        .login-text a:hover {
-            text-decoration: underline;
-        }
-
-        /*
-         * OTP section
-         */
-        #otpSection {
-            display: none;
-        }
-
-        .otp-icon {
-            width: 64px;
-            height: 64px;
-
-            margin: 0 auto 15px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 50%;
-
-            background: linear-gradient(
-                135deg,
-                #dbeafe,
-                #ede9fe
-            );
-
-            font-size: 28px;
-        }
-
-        .otp-email {
-            color: #2563eb;
-
-            font-weight: 700;
-
-            word-break: break-word;
-        }
-
-        .otp-input {
-            text-align: center;
-
-            font-size: 24px;
-
-            font-weight: 700;
-
-            letter-spacing: 8px;
-
-            padding-left: 18px;
-        }
-
-        .resend-area {
-            text-align: center;
-
-            margin-top: 15px;
-        }
-
-        .resend-button {
-            border: none;
-
-            background: transparent;
-
-            color: #2563eb;
-
-            font-weight: 700;
-
-            font-size: 13px;
-
-            cursor: pointer;
-        }
-
-        .resend-button:hover {
-            text-decoration: underline;
-        }
-
-        .back-button {
-            width: 100%;
-
-            height: 44px;
-
-            margin-top: 10px;
-
-            border: 1px solid #d9dee8;
-
-            border-radius: 11px;
-
-            background: white;
-
-            color: #374151;
-
-            font-weight: 600;
-
-            cursor: pointer;
-        }
-
-        .back-button:hover {
-            background: #f9fafb;
-        }
-
-        /*
-         * Footer
-         */
-        .security-text {
-            text-align: center;
-
-            margin-top: 18px;
-
-            font-size: 11px;
-
-            color: #9ca3af;
-        }
-
-        /*
-         * Mobile
-         */
-        @media (max-width: 600px) {
-
-            body {
-                min-height: 100dvh;
-
-                padding: 24px 16px;
-
-                align-items: center;
-            }
-
-            .container {
-                width: 100%;
-
-                max-width: 360px;
-            }
-
-            .card {
-                width: 100%;
-
-                padding: 25px 20px;
-
-                border-radius: 20px;
-
-                min-height: auto;
-
-                box-shadow:
-                    0 22px 55px rgba(0, 0, 0, 0.42);
-            }
-
-            .logo {
-                width: 56px;
-                height: 56px;
-
-                border-radius: 16px;
-
-                font-size: 23px;
-            }
-
-            h1 {
-                font-size: 24px;
-            }
-
-            .subtitle {
-                font-size: 13px;
-
-                margin-bottom: 21px;
-            }
-
-            input {
-                height: 47px;
-            }
-
-            .main-button {
-                height: 48px;
-            }
-
-            .tech-line {
-                opacity: 0.25;
-            }
-        }
-
-        /*
-         * Small phones
-         */
-        @media (max-width: 360px) {
-
-            body {
-                padding: 20px 13px;
-            }
-
-            .container {
-                max-width: 340px;
-            }
-
-            .card {
-                padding: 22px 17px;
-
-                border-radius: 18px;
-            }
-
-            .logo {
-                width: 52px;
-                height: 52px;
-            }
-
-            h1 {
-                font-size: 22px;
-            }
-
-            .subtitle {
-                font-size: 12px;
-            }
-
-            input {
-                font-size: 13px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account | User System</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    font-family:Arial,sans-serif;
+    background:
+    radial-gradient(circle at 15% 20%,#06b6d455,transparent 30%),
+    radial-gradient(circle at 85% 80%,#7c3aed55,transparent 30%),
+    linear-gradient(135deg,#020617,#0b1630,#111827);
+}
+
+body:before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+    linear-gradient(#06b6d40d 1px,transparent 1px),
+    linear-gradient(90deg,#06b6d40d 1px,transparent 1px);
+    background-size:45px 45px;
+    pointer-events:none;
+}
+
+.card{
+    width:100%;
+    max-width:430px;
+    padding:32px;
+    background:#fffffffa;
+    border-radius:24px;
+    box-shadow:0 30px 80px #0008;
+    position:relative;
+    z-index:2;
+}
+
+.card:before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:4px;
+    background:linear-gradient(90deg,#06b6d4,#2563eb,#7c3aed);
+}
+
+.logo{
+    width:60px;height:60px;
+    margin:0 auto 14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:17px;
+    color:white;
+    font-size:26px;
+    font-weight:bold;
+    background:linear-gradient(135deg,#06b6d4,#2563eb,#7c3aed);
+}
+
+h1{text-align:center;color:#111827;margin-bottom:8px}
+
+.subtitle{
+    text-align:center;
+    color:#6b7280;
+    font-size:14px;
+    margin-bottom:24px;
+}
+
+.group{margin-bottom:16px}
+
+label{
+    display:block;
+    font-size:13px;
+    font-weight:bold;
+    color:#374151;
+    margin-bottom:7px;
+}
+
+.input{
+    position:relative;
+}
+
+input{
+    width:100%;
+    height:48px;
+    padding:0 14px;
+    border:1px solid #d9dee8;
+    border-radius:11px;
+    outline:none;
+    background:#f9fafb;
+    font-size:14px;
+}
+
+input:focus{
+    background:white;
+    border-color:#2563eb;
+    box-shadow:0 0 0 4px #2563eb18;
+}
+
+.password{padding-right:45px}
+
+.eye{
+    position:absolute;
+    right:8px;
+    top:7px;
+    width:35px;
+    height:35px;
+    border:0;
+    background:transparent;
+    cursor:pointer;
+    font-size:17px;
+}
+
+.main-btn{
+    width:100%;
+    height:49px;
+    border:0;
+    border-radius:11px;
+    color:white;
+    font-weight:bold;
+    font-size:15px;
+    cursor:pointer;
+    background:linear-gradient(135deg,#06b6d4,#2563eb,#7c3aed);
+}
+
+.main-btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+.message{
+    display:none;
+    margin-top:13px;
+    padding:10px;
+    border-radius:9px;
+    text-align:center;
+    font-size:13px;
+}
+
+.show{display:block}
+.success{background:#ecfdf5;color:#047857}
+.error{background:#fef2f2;color:#b91c1c}
+
+.login{
+    text-align:center;
+    margin-top:18px;
+    font-size:13px;
+    color:#6b7280;
+}
+
+.login a{
+    color:#2563eb;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+.security{
+    text-align:center;
+    margin-top:16px;
+    color:#9ca3af;
+    font-size:11px;
+}
+
+#otpSection{display:none}
+
+.otp-icon{
+    text-align:center;
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.otp-input{
+    text-align:center;
+    font-size:23px;
+    font-weight:bold;
+    letter-spacing:7px;
+}
+
+.resend{
+    display:block;
+    margin:14px auto;
+    border:0;
+    background:none;
+    color:#2563eb;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.back{
+    width:100%;
+    height:43px;
+    border:1px solid #d9dee8;
+    border-radius:10px;
+    background:white;
+    cursor:pointer;
+}
+
+@media(max-width:500px){
+    .card{padding:25px 20px}
+}
+</style>
 </head>
 
 <body>
 
-    <div class="background-glow"></div>
+<div class="card">
 
-    <div class="tech-line line-one"></div>
-    <div class="tech-line line-two"></div>
+<!-- REGISTER -->
+<div id="registerSection">
 
-    <div class="container">
+    <div class="logo">U</div>
 
-        <div class="card">
+    <h1>Create Account</h1>
 
-            <!-- REGISTER SECTION -->
-            <div id="registerSection">
+    <p class="subtitle">
+        Create your account and get started securely.
+    </p>
 
-                <div class="logo">
-                    U
-                </div>
-
-                <h1>Create Account</h1>
-
-                <p class="subtitle">
-                    Create your account and get started securely.
-                </p>
-
-
-                <!-- Username -->
-                <div class="form-group">
-
-                    <label for="username">
-                        Username
-                    </label>
-
-                    <div class="input-box">
-
-                        <input
-                            type="text"
-                            id="username"
-                            placeholder="Enter your username"
-                            autocomplete="username"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- Email -->
-                <div class="form-group">
-
-                    <label for="email">
-                        Email Address
-                    </label>
-
-                    <div class="input-box">
-
-                        <input
-                            type="email"
-                            id="email"
-                            placeholder="Enter your email"
-                            autocomplete="email"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- Password -->
-                <div class="form-group">
-
-                    <label for="password">
-                        Password
-                    </label>
-
-                    <div class="input-box">
-
-                        <input
-                            type="password"
-                            id="password"
-                            class="password-input"
-                            placeholder="Create a password"
-                            autocomplete="new-password"
-                        >
-
-                        <button
-                            type="button"
-                            class="eye-button"
-                            id="eyeButton"
-                        >
-                            👁
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Register Button -->
-                <button
-                    type="button"
-                    class="main-button"
-                    id="registerButton"
-                >
-                    Create Account
-                </button>
-
-
-                <!-- Message -->
-                <div
-                    id="registerMessage"
-                    class="message"
-                ></div>
-
-
-                <!-- Login -->
-                <div class="login-text">
-
-                    Already have an account?
-
-                    <a href="/api/users/login">
-                        Login
-                    </a>
-
-                </div>
-
-                <div class="security-text">
-                    🔒 Your information is securely protected
-                </div>
-
-            </div>
-
-
-            <!-- OTP SECTION -->
-            <div id="otpSection">
-
-                <div class="otp-icon">
-                    ✉️
-                </div>
-
-                <h1>Verify Email</h1>
-
-                <p class="subtitle">
-
-                    We've sent a verification code to
-
-                    <br>
-
-                    <span
-                        id="otpEmail"
-                        class="otp-email"
-                    ></span>
-
-                </p>
-
-
-                <!-- OTP -->
-                <div class="form-group">
-
-                    <label for="otp">
-                        Enter OTP
-                    </label>
-
-                    <input
-                        type="text"
-                        id="otp"
-                        class="otp-input"
-                        maxlength="6"
-                        inputmode="numeric"
-                        placeholder="000000"
-                        autocomplete="one-time-code"
-                    >
-
-                </div>
-
-
-                <!-- Verify -->
-                <button
-                    type="button"
-                    class="main-button"
-                    id="verifyButton"
-                >
-                    Verify OTP
-                </button>
-
-
-                <!-- OTP Message -->
-                <div
-                    id="otpMessage"
-                    class="message"
-                ></div>
-
-
-                <!-- Resend -->
-                <div class="resend-area">
-
-                    <button
-                        type="button"
-                        class="resend-button"
-                        id="resendButton"
-                    >
-                        Resend OTP
-                    </button>
-
-                </div>
-
-
-                <!-- Back -->
-                <button
-                    type="button"
-                    class="back-button"
-                    id="backButton"
-                >
-                    ← Back to Registration
-                </button>
-
-                <div class="security-text">
-                    🔐 OTP verification keeps your account secure
-                </div>
-
-            </div>
-
-        </div>
-
+    <div class="group">
+        <label>Username</label>
+        <input id="username"
+               type="text"
+               placeholder="Enter your username"
+               autocomplete="username">
     </div>
 
+    <div class="group">
+        <label>Email Address</label>
+        <input id="email"
+               type="email"
+               placeholder="Enter your email"
+               autocomplete="email">
+    </div>
 
-    <script>
+    <div class="group">
+        <label>Password</label>
 
-        const usernameInput =
-            document.getElementById("username");
+        <div class="input">
+            <input id="password"
+                   class="password"
+                   type="password"
+                   placeholder="Create a password"
+                   autocomplete="new-password">
 
-        const emailInput =
-            document.getElementById("email");
+            <button class="eye" id="eye" type="button">👁</button>
+        </div>
+    </div>
 
-        const passwordInput =
-            document.getElementById("password");
+    <button class="main-btn" id="registerBtn">
+        Create Account
+    </button>
 
-        const eyeButton =
-            document.getElementById("eyeButton");
+    <div id="registerMsg" class="message"></div>
 
-        const registerButton =
-            document.getElementById("registerButton");
+    <div class="login">
+        Already have an account?
+        <a href="/api/users/login">Login</a>
+    </div>
 
-        const registerMessage =
-            document.getElementById("registerMessage");
+    <div class="security">
+        🔒 Your information is securely protected
+    </div>
 
-        const registerSection =
-            document.getElementById("registerSection");
+</div>
 
-        const otpSection =
-            document.getElementById("otpSection");
 
-        const otpEmail =
-            document.getElementById("otpEmail");
+<!-- OTP -->
+<div id="otpSection">
 
-        const otpInput =
-            document.getElementById("otp");
+    <div class="otp-icon">✉️</div>
 
-        const verifyButton =
-            document.getElementById("verifyButton");
+    <h1>Verify Email</h1>
 
-        const resendButton =
-            document.getElementById("resendButton");
+    <p class="subtitle">
+        OTP sent to<br>
+        <b id="otpEmail"></b>
+    </p>
 
-        const backButton =
-            document.getElementById("backButton");
+    <div class="group">
+        <label>Enter OTP</label>
 
-        const otpMessage =
-            document.getElementById("otpMessage");
+        <input id="otp"
+               class="otp-input"
+               maxlength="6"
+               inputmode="numeric"
+               placeholder="000000">
+    </div>
 
+    <button class="main-btn" id="verifyBtn">
+        Verify OTP
+    </button>
 
-        let userEmail = "";
+    <div id="otpMsg" class="message"></div>
 
+    <button class="resend" id="resendBtn">
+        Resend OTP
+    </button>
 
-        /*
-         * Password eye toggle
-         */
-        eyeButton.addEventListener("click", function () {
+    <button class="back" id="backBtn">
+        ← Back to Registration
+    </button>
 
-            if (passwordInput.type === "password") {
+    <div class="security">
+        🔐 OTP verification keeps your account secure
+    </div>
 
-                passwordInput.type = "text";
+</div>
 
-                eyeButton.innerText = "🙈";
+</div>
 
-            } else {
 
-                passwordInput.type = "password";
+<script>
 
-                eyeButton.innerText = "👁";
+const $ = id => document.getElementById(id);
 
-            }
+const username = $("username");
+const email = $("email");
+const password = $("password");
 
-        });
+const registerBtn = $("registerBtn");
+const registerMsg = $("registerMsg");
 
+const registerSection = $("registerSection");
+const otpSection = $("otpSection");
 
-        /*
-         * Message helper
-         */
-        function showMessage(element, text, type) {
-
-            element.innerText = text;
-
-            element.className =
-                "message show " + type;
-
-        }
-
-
-        /*
-         * Register
-         */
-        registerButton.addEventListener("click", async function () {
-
-            const username =
-                usernameInput.value.trim();
-
-            const email =
-                emailInput.value.trim();
-
-            const password =
-                passwordInput.value;
-
-
-            /*
-             * Frontend validation
-             */
-            if (!username) {
-
-                showMessage(
-                    registerMessage,
-                    "Please enter your username.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            if (!email) {
-
-                showMessage(
-                    registerMessage,
-                    "Please enter your email.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            if (!password) {
-
-                showMessage(
-                    registerMessage,
-                    "Please enter your password.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            registerButton.disabled = true;
-
-            registerButton.innerText =
-                "Sending OTP...";
-
-            registerMessage.className =
-                "message";
-
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/api/users/register",
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body: JSON.stringify({
-                                username: username,
-                                email: email,
-                                password: password
-                            })
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        data.message ||
-                        data.error ||
-                        "Registration failed."
-                    );
-
-                }
-
-
-                /*
-                 * Save email
-                 */
-                userEmail = email;
-
-
-                /*
-                 * Show OTP screen
-                 */
-                registerSection.style.display =
-                    "none";
-
-                otpSection.style.display =
-                    "block";
-
-                otpEmail.innerText =
-                    userEmail;
-
-
-                showMessage(
-                    otpMessage,
-                    data.message ||
-                    "OTP sent successfully. Please check your email.",
-                    "success"
-                );
-
-
-            } catch (error) {
-
-                showMessage(
-                    registerMessage,
-                    error.message ||
-                    "Something went wrong.",
-                    "error"
-                );
-
-            } finally {
-
-                registerButton.disabled =
-                    false;
-
-                registerButton.innerText =
-                    "Create Account";
-
-            }
-
-        });
-
-
-        /*
-         * Verify OTP
-         */
-        verifyButton.addEventListener(
-            "click",
-            async function () {
-
-                const otp =
-                    otpInput.value.trim();
-
-
-                if (!otp) {
-
-                    showMessage(
-                        otpMessage,
-                        "Please enter the OTP.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-
-                if (otp.length !== 6) {
-
-                    showMessage(
-                        otpMessage,
-                        "OTP must be 6 digits.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-
-                verifyButton.disabled =
-                    true;
-
-                verifyButton.innerText =
-                    "Verifying...";
-
-
-                try {
-
-                    const response =
-                        await fetch(
-                            "/api/users/verify-otp",
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
-
-                                body: JSON.stringify({
-                                    email: userEmail,
-                                    otp: otp
-                                })
-                            }
-                        );
-
-
-                    const data =
-                        await response.json();
-
-
-                    if (!response.ok) {
-
-                        throw new Error(
-                            data.message ||
-                            data.error ||
-                            "OTP verification failed."
-                        );
-
-                    }
-
-
-                    showMessage(
-                        otpMessage,
-                        data.message ||
-                        "Email verified successfully!",
-                        "success"
-                    );
-
-
-                    verifyButton.innerText =
-                        "Verified ✓";
-
-
-                    /*
-                     * Redirect after verification
-                     */
-                    setTimeout(function () {
-
-                        window.location.href =
-                            "/api/users/login";
-
-                    }, 1200);
-
-
-                } catch (error) {
-
-                    showMessage(
-                        otpMessage,
-                        error.message ||
-                        "Invalid OTP.",
-                        "error"
-                    );
-
-                    verifyButton.disabled =
-                        false;
-
-                    verifyButton.innerText =
-                        "Verify OTP";
-
-                }
-
+const otp = $("otp");
+const otpEmail = $("otpEmail");
+const verifyBtn = $("verifyBtn");
+const resendBtn = $("resendBtn");
+const backBtn = $("backBtn");
+const otpMsg = $("otpMsg");
+
+let userEmail = "";
+
+
+/* Show message */
+function message(box,text,type){
+    box.textContent = text;
+    box.className = "message show " + type;
+}
+
+
+/* Password eye */
+$("eye").onclick = () => {
+    password.type =
+        password.type === "password"
+        ? "text"
+        : "password";
+
+    $("eye").textContent =
+        password.type === "password"
+        ? "👁"
+        : "🙈";
+};
+
+
+/* REGISTER */
+registerBtn.onclick = async () => {
+
+    const name = username.value.trim();
+    const mail = email.value.trim();
+    const pass = password.value;
+
+    if(!name || !mail || !pass){
+        message(
+            registerMsg,
+            "Please fill all fields.",
+            "error"
+        );
+        return;
+    }
+
+    if(pass.length < 8){
+        message(
+            registerMsg,
+            "Password must be at least 8 characters.",
+            "error"
+        );
+        return;
+    }
+
+    registerBtn.disabled = true;
+    registerBtn.textContent = "Sending OTP...";
+
+    try{
+
+        const response = await fetch(
+            "/api/users/register",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                /* IMPORTANT: backend expects name */
+                body:JSON.stringify({
+                    name:name,
+                    email:mail,
+                    password:pass
+                })
             }
         );
 
+        const data = await response.json();
 
-        /*
-         * Resend OTP
-         */
-        resendButton.addEventListener(
-            "click",
-            async function () {
+        if(!response.ok)
+            throw new Error(
+                data.message || "Registration failed."
+            );
 
-                resendButton.disabled =
-                    true;
+        userEmail = mail;
+        otpEmail.textContent = mail;
 
-                resendButton.innerText =
-                    "Sending...";
+        registerSection.style.display = "none";
+        otpSection.style.display = "block";
 
+        message(
+            otpMsg,
+            data.message || "OTP sent successfully.",
+            "success"
+        );
 
-                try {
+    }catch(error){
 
-                    const response =
-                        await fetch(
-                            "/api/users/resend-otp",
-                            {
-                                method: "POST",
+        message(
+            registerMsg,
+            error.message,
+            "error"
+        );
 
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
+    }finally{
 
-                                body: JSON.stringify({
-                                    email: userEmail
-                                })
-                            }
-                        );
+        registerBtn.disabled = false;
+        registerBtn.textContent = "Create Account";
 
-
-                    const data =
-                        await response.json();
+    }
+};
 
 
-                    if (!response.ok) {
+/* VERIFY OTP */
+verifyBtn.onclick = async () => {
 
-                        throw new Error(
-                            data.message ||
-                            data.error ||
-                            "Unable to resend OTP."
-                        );
+    const code = otp.value.trim();
 
-                    }
+    if(code.length !== 6){
+        message(
+            otpMsg,
+            "Please enter a valid 6-digit OTP.",
+            "error"
+        );
+        return;
+    }
 
+    verifyBtn.disabled = true;
+    verifyBtn.textContent = "Verifying...";
 
-                    showMessage(
-                        otpMessage,
-                        data.message ||
-                        "New OTP sent successfully.",
-                        "success"
-                    );
+    try{
 
-
-                } catch (error) {
-
-                    showMessage(
-                        otpMessage,
-                        error.message ||
-                        "Unable to resend OTP.",
-                        "error"
-                    );
-
-                } finally {
-
-                    resendButton.disabled =
-                        false;
-
-                    resendButton.innerText =
-                        "Resend OTP";
-
-                }
-
+        const response = await fetch(
+            "/api/users/verify-otp",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    email:userEmail,
+                    otp:code
+                })
             }
         );
 
+        const data = await response.json();
 
-        /*
-         * Back to registration
-         */
-        backButton.addEventListener(
-            "click",
-            function () {
+        if(!response.ok)
+            throw new Error(
+                data.message || "OTP verification failed."
+            );
 
-                otpSection.style.display =
-                    "none";
+        message(
+            otpMsg,
+            data.message || "Email verified successfully!",
+            "success"
+        );
 
-                registerSection.style.display =
-                    "block";
+        verifyBtn.textContent = "Verified ✓";
 
-                otpInput.value = "";
+        setTimeout(
+            () => location.href = "/api/users/login",
+            1200
+        );
 
-                otpMessage.className =
-                    "message";
+    }catch(error){
 
+        message(
+            otpMsg,
+            error.message,
+            "error"
+        );
+
+        verifyBtn.disabled = false;
+        verifyBtn.textContent = "Verify OTP";
+    }
+};
+
+
+/* RESEND OTP */
+resendBtn.onclick = async () => {
+
+    resendBtn.disabled = true;
+    resendBtn.textContent = "Sending...";
+
+    try{
+
+        const response = await fetch(
+            "/api/users/resend-otp",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    email:userEmail
+                })
             }
         );
 
+        const data = await response.json();
 
-        /*
-         * Allow only numbers in OTP
-         */
-        otpInput.addEventListener(
-            "input",
-            function () {
+        if(!response.ok)
+            throw new Error(
+                data.message || "Unable to resend OTP."
+            );
 
-                this.value =
-                    this.value
-                    .replace(/\D/g, "")
-                    .slice(0, 6);
-
-            }
+        message(
+            otpMsg,
+            data.message,
+            "success"
         );
 
-    </script>
+    }catch(error){
+
+        message(
+            otpMsg,
+            error.message,
+            "error"
+        );
+
+    }finally{
+
+        resendBtn.disabled = false;
+        resendBtn.textContent = "Resend OTP";
+    }
+};
+
+
+/* BACK */
+backBtn.onclick = () => {
+
+    otpSection.style.display = "none";
+    registerSection.style.display = "block";
+
+    otp.value = "";
+    otpMsg.className = "message";
+};
+
+
+/* Only numbers */
+otp.oninput = () => {
+    otp.value = otp.value
+        .replace(/\D/g,"")
+        .slice(0,6);
+};
+
+</script>
 
 </body>
 </html>
