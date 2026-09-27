@@ -1,5 +1,3 @@
-const PendingUser = require("../models/PendingUser");
-const User = require("../models/User");
 const mongoose = require("mongoose");
 
 const pendingUserSchema = new mongoose.Schema(
@@ -15,7 +13,8 @@ const pendingUserSchema = new mongoose.Schema(
             type: String,
             required: true,
             lowercase: true,
-            trim: true
+            trim: true,
+            unique: true
         },
 
         password: {
@@ -38,6 +37,7 @@ const pendingUserSchema = new mongoose.Schema(
     }
 );
 
+// OTP expire hone ke baad document automatically delete
 pendingUserSchema.index(
     { otpExpires: 1 },
     { expireAfterSeconds: 0 }
